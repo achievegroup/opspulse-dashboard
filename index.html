@@ -20,7 +20,7 @@
 <body>
 <div id="root">Loading OpsPulse…</div>
 
-<script type="text/babel" data-presets="react">
+<script type="text/plain" id="app-source">
 const { useState, useMemo } = React;
 const {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
@@ -701,6 +701,17 @@ function ReportView({ theme, company, counts, siteData, reportPeriod, setReportP
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<Dashboard />);
+</script>
+
+<script>
+  // Manually compile the JSX above using the classic runtime (React.createElement),
+  // avoiding Babel's newer "automatic" runtime which injects an ES `import` statement
+  // that a plain classic <script> cannot execute.
+  var __source = document.getElementById("app-source").textContent;
+  var __compiled = Babel.transform(__source, {
+    presets: [["react", { runtime: "classic" }]]
+  }).code;
+  (0, eval)(__compiled);
 </script>
 </body>
 </html>
