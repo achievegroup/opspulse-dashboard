@@ -20,7 +20,7 @@
 <body>
 <div id="root">Loading OpsPulse…</div>
 
-<script type="text/babel" data-presets="react" data-type="module">
+<script type="text/babel" data-presets="react">
 const { useState, useMemo } = React;
 const {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
@@ -306,6 +306,7 @@ function Dashboard() {
 
   return (
     <div
+      className="op-app"
       style={{
         fontFamily: "'Inter', sans-serif", background: theme.bg, color: theme.text,
         minHeight: "100%", display: "flex", transition: "background 0.35s ease, color 0.35s ease",
@@ -323,17 +324,35 @@ function Dashboard() {
           .no-print { display: none !important; }
           .print-area { padding: 0 !important; }
         }
+        /* --- Embed-friendly responsive breakpoints (for Google Sites iframes) --- */
+        @media (max-width: 860px) {
+          .op-app { flex-direction: column !important; }
+          .op-sidebar {
+            width: 100% !important; height: auto !important; position: relative !important;
+            flex-direction: row !important; flex-wrap: wrap; align-items: center !important;
+            padding: 12px 14px !important; gap: 10px !important;
+          }
+          .op-brand-row { padding: 0 !important; flex: 0 0 auto; }
+          .op-switcher { margin-bottom: 0 !important; flex: 1 1 220px; }
+          .op-nav { flex-direction: row !important; flex-wrap: wrap; gap: 6px !important; flex: 1 1 100%; }
+          .op-footer { display: none !important; }
+          .op-main { padding: 18px 16px 40px !important; }
+        }
+        @media (max-width: 520px) {
+          .kpi-row { flex-direction: column !important; }
+          .op-report-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        }
       `}</style>
 
       <aside
-        className="no-print"
+        className="no-print op-sidebar"
         style={{
           width: 232, flexShrink: 0, background: theme.sidebarBg, color: theme.sidebarText,
           display: "flex", flexDirection: "column", padding: "20px 14px",
           position: "sticky", top: 0, height: "100vh",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 6px 20px" }}>
+        <div className="op-brand-row" style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 6px 20px" }}>
           <div
             style={{
               width: 34, height: 34, borderRadius: 9, background: theme.primary,
@@ -349,7 +368,7 @@ function Dashboard() {
           </div>
         </div>
 
-        <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 4, display: "flex", gap: 4, marginBottom: 22 }}>
+        <div className="op-switcher" style={{ background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 4, display: "flex", gap: 4, marginBottom: 22 }}>
           {Object.values(COMPANIES).map((c) => {
             const active = c.id === companyId;
             return (
@@ -369,7 +388,7 @@ function Dashboard() {
           })}
         </div>
 
-        <nav style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+        <nav className="op-nav" style={{ display: "flex", flexDirection: "column", gap: 3 }}>
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const active = view === item.id;
@@ -392,7 +411,7 @@ function Dashboard() {
           })}
         </nav>
 
-        <div style={{ marginTop: "auto", padding: "14px 12px", borderRadius: 12, background: "rgba(255,255,255,0.04)" }}>
+        <div className="op-footer" style={{ marginTop: "auto", padding: "14px 12px", borderRadius: 12, background: "rgba(255,255,255,0.04)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: theme.sidebarMuted, marginBottom: 6 }}>
             <Sparkles size={12} /> กำลังดูข้อมูลของ
           </div>
@@ -400,7 +419,7 @@ function Dashboard() {
         </div>
       </aside>
 
-      <main className="print-area" style={{ flex: 1, minWidth: 0, padding: "26px 32px 60px" }}>
+      <main className="print-area op-main" style={{ flex: 1, minWidth: 0, padding: "26px 32px 60px" }}>
         <div className="no-print" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 26 }}>
           <div>
             <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 0.6, color: theme.primary, textTransform: "uppercase", marginBottom: 4 }}>
@@ -446,7 +465,7 @@ function Dashboard() {
 function DashboardView({ theme, counts, pieData, siteData }) {
   return (
     <>
-      <div style={{ display: "flex", gap: 16, marginBottom: 22, flexWrap: "wrap" }}>
+      <div className="kpi-row" style={{ display: "flex", gap: 16, marginBottom: 22, flexWrap: "wrap" }}>
         <KpiCard icon={ListTodo} label="งานทั้งหมด" value={counts.total} sub="ทุกไซต์งาน" theme={theme} tint={theme.primary} />
         <KpiCard icon={Clock} label="กำลังดำเนินการ" value={counts.inprogress} sub="อยู่ระหว่างปฏิบัติงาน" theme={theme} tint={theme.accent} />
         <KpiCard icon={CheckCircle2} label="เสร็จสิ้นแล้ว" value={counts.completed} sub="ปิดงานเรียบร้อย" theme={theme} tint="#22A559" />
@@ -629,7 +648,7 @@ function ReportView({ theme, company, counts, siteData, reportPeriod, setReportP
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 14, marginBottom: 26 }}>
+        <div className="op-report-grid" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 14, marginBottom: 26 }}>
           {[
             ["งานทั้งหมด", counts.total],
             ["รอดำเนินการ", counts.pending],
