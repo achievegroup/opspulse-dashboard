@@ -212,7 +212,10 @@ const SHEET_CSV_URL = "";
  
 // ชีตสำหรับรายการ PO (คอลัมน์ที่รองรับ: id, company, site, vendor, description, amount, date, status)
 // ถ้าปล่อยว่างไว้ ระบบจะใช้ข้อมูลตัวอย่าง (SAMPLE_POS) ด้านล่างแทน
-const PO_SHEET_CSV_URL = "";
+const PO_SHEET_CSV_URL_BY_COMPANY = {
+  engpower: "",   // <-- วางลิงก์ CSV ของชีต PO บริษัท เอ็นจ์-เพาเวอร์ ที่นี่
+  achieved: "",   // <-- วางลิงก์ CSV ของชีต PO บริษัท แอคชีฟแพลน ที่นี่
+};
  
 /* ------------------------------------------------------------------ */
 /* Custom Google-Sheet-linked modules (แถบเมนูด้านซ้าย)                */
@@ -1111,7 +1114,40 @@ function Dashboard({ onLogout }) {
   }, []);
  
   useEffect(() => {
-    if (!PO_SHEET_CSV_URL) return; // ยังไม่ได้ตั้งค่า Google Sheet ใช้ข้อมูลตัวอย่าง PO ต่อไป
+    useEffect(() => {
+  const url = PO_SHEET_CSV_URL_BY_COMPANY[companyId];
+  if (!url) return;
+  setLoadingPos(true);
+  fetch(url)
+    .then((res) => {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.text();
+    })
+    .then((csvText) => {
+      const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+      const rows = parsed.data
+        .map((r) => ({
+          id: (r.id || "").toString().trim(),
+          company: companyId, // เติม company ให้อัตโนมัติตามบริษัทที่กำลังโหลด (ไม่ต้องมีคอลัมน์นี้ในชีตแล้ว)
+          site: (r.site || "").toString().trim(),
+          vendor: (r.vendor || "").toString().trim(),
+          description: (r.description || "").toString().trim(),
+          qty: parseFloat((r.qty || "0").toString().replace(/,/g, "")) || 0,
+          amount: parseFloat((r.amount || "0").toString().replace(/,/g, "")) || 0,
+          date: (r.date || "").toString().trim(),
+          status: (r.status || "").toString().trim(),
+        }))
+        .filter((r) => r.id);
+      if (rows.length) {
+        setPosData((prev) => [...prev.filter((p) => p.company !== companyId), ...rows]);
+      }
+      setPoLoadError("");
+    })
+    .catch((err) => {
+      setPoLoadError("โหลดข้อมูล PO จาก Google Sheet ไม่สำเร็จ (" + err.message + ")");
+    })
+    .finally(() => setLoadingPos(false));
+}, [companyId]); // <-- สำคัญ: ใส่ companyId เป็น dependency เพื่อให้โหลดใหม่เวลาสลับบริษัท // ยังไม่ได้ตั้งค่า Google Sheet ใช้ข้อมูลตัวอย่าง PO ต่อไป
     setLoadingPos(true);
     fetch(PO_SHEET_CSV_URL)
       .then((res) => {
