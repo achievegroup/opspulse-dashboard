@@ -94,6 +94,31 @@ const Sparkles = (p) => (
     <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
   </IconBase>
 );
+const Receipt = (p) => (
+  <IconBase {...p}>
+    <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" />
+    <path d="M8 7h8" /><path d="M8 11h8" /><path d="M8 15h5" />
+  </IconBase>
+);
+const TrendingUp = (p) => (
+  <IconBase {...p}>
+    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /><polyline points="16 7 22 7 22 13" />
+  </IconBase>
+);
+const FileSpreadsheet = (p) => (
+  <IconBase {...p}>
+    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+    <path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M8 13h2" /><path d="M14 13h2" /><path d="M8 17h2" /><path d="M14 17h2" />
+  </IconBase>
+);
+const RefreshCw = (p) => (
+  <IconBase {...p}>
+    <path d="M3 12a9 9 0 0 1 15-6.7L21 8" /><path d="M21 3v5h-5" />
+    <path d="M21 12a9 9 0 0 1-15 6.7L3 16" /><path d="M8 16H3v5" />
+  </IconBase>
+);
+ 
+const ICONS_BY_NAME = { FileSpreadsheet, Receipt, TrendingUp };
  
 /* ------------------------------------------------------------------ */
 /* Company / theme configuration                                       */
@@ -157,6 +182,14 @@ const STATUS_META = {
   overdue: { label: "เกินกำหนด", color: "#E2482F" },
 };
  
+const PO_STATUS_META = {
+  pending:   { label: "รออนุมัติ",     color: "#94A3B8" },
+  approved:  { label: "อนุมัติแล้ว",   color: "ACCENT" },
+  ordered:   { label: "สั่งซื้อแล้ว",   color: "#8B5CF6" },
+  paid:      { label: "ชำระเงินแล้ว",  color: "#22A559" },
+  cancelled: { label: "ยกเลิก",        color: "#E2482F" },
+};
+ 
 /* ------------------------------------------------------------------ */
 /* Google Sheet connection                                             */
 /* ------------------------------------------------------------------ */
@@ -164,6 +197,37 @@ const STATUS_META = {
 // ตัวอย่าง: "https://docs.google.com/spreadsheets/d/e/2PACX-xxxx/pub?output=csv"
 // ถ้าปล่อยว่างไว้ ระบบจะใช้ข้อมูลตัวอย่าง (SAMPLE_TASKS) ด้านล่างแทน
 const SHEET_CSV_URL = "";
+ 
+// ชีตสำหรับรายการ PO (คอลัมน์ที่รองรับ: id, company, site, vendor, description, amount, date, status)
+// ถ้าปล่อยว่างไว้ ระบบจะใช้ข้อมูลตัวอย่าง (SAMPLE_POS) ด้านล่างแทน
+const PO_SHEET_CSV_URL = "";
+ 
+/* ------------------------------------------------------------------ */
+/* Custom Google-Sheet-linked modules (แถบเมนูด้านซ้าย)                */
+/* ------------------------------------------------------------------ */
+// เพิ่มเมนูใหม่ที่ดึงข้อมูลจาก Google Sheet ได้ที่นี่ โดยไม่ต้องแก้โค้ดส่วนอื่นของระบบ
+// วิธีตั้งค่า:
+//   1) เปิดไฟล์ Google Sheet ที่ต้องการ → File → Share → Publish to web
+//   2) เลือกชีตที่ต้องการ → รูปแบบ CSV → กด Publish แล้วคัดลอกลิงก์
+//   3) นำลิงก์มาใส่ในช่อง sheetUrl ด้านล่าง (แถวแรกของชีตควรเป็นหัวคอลัมน์)
+// ระบบจะสร้างเมนูและตารางให้อัตโนมัติตามหัวคอลัมน์ในชีตนั้น ๆ
+const CUSTOM_SHEETS = [
+  {
+    id: "insurance",            // ใช้อ้างอิงภายในเท่านั้น ห้ามซ้ำกัน
+    label: "ประกันรถ",           // ชื่อเมนูที่แสดงในแถบด้านซ้าย
+    icon: "FileSpreadsheet",
+    company: null,               // ใส่ "achieved" หรือ "engpower" ถ้าต้องการให้เห็นเฉพาะบริษัทนั้น, null = เห็นทั้งสองบริษัท
+    sheetUrl: "",                 // วาง URL CSV จาก Google Sheet ที่นี่
+  },
+  {
+    id: "sitemaster",
+    label: "Site Master",
+    icon: "FileSpreadsheet",
+    company: null,
+    sheetUrl: "",
+  },
+  // เพิ่มรายการใหม่ได้โดยคัดลอกรูปแบบ { id, label, icon, company, sheetUrl } มาต่อท้าย
+];
  
 /* ------------------------------------------------------------------ */
 /* Sample / fallback data (used if Google Sheet is not connected yet)  */
@@ -196,17 +260,40 @@ const SAMPLE_TASKS = [
   { id: "EP-1112", company: "engpower", site: "โรงแรม Riverside Grand", title: "ติดตั้งระบบ VRF ปรับอากาศห้องพักชั้น 8-12", type: "ปรับอากาศ", assignee: "ณัฐพงษ์ เครื่องเย็น", start: "18 ก.ค. 2569", end: "26 ก.ค. 2569", status: "inprogress" },
 ];
  
+// รายการ PO ตัวอย่าง (แทนที่ด้วยข้อมูลจริงผ่าน PO_SHEET_CSV_URL ด้านบนได้)
+const SAMPLE_POS = [
+  { id: "AP-PO-0489", company: "achieved", site: "ABC Tower สำนักงานใหญ่", vendor: "สวนสวยการ์เดน", description: "ปุ๋ยและอุปกรณ์ตัดแต่งสวน", amount: 12800, date: "25 มิ.ย. 2569", status: "paid" },
+  { id: "AP-PO-0492", company: "achieved", site: "Central Plaza สาขาลาดพร้าว", vendor: "ยูนิฟอร์มโปร", description: "ถุงมือยางและอุปกรณ์เซฟตี้", amount: 9700, date: "28 มิ.ย. 2569", status: "paid" },
+  { id: "AP-PO-0501", company: "achieved", site: "ABC Tower สำนักงานใหญ่", vendor: "เคมีภัณฑ์สะอาด", description: "น้ำยาทำความสะอาดพื้นและกระจก (ล็อตเดือน ก.ค.)", amount: 48500, date: "3 ก.ค. 2569", status: "paid" },
+  { id: "AP-PO-0502", company: "achieved", site: "The Grand Residence คอนโด", vendor: "อุปกรณ์ทำความสะอาดไทย", description: "ไม้ถูพื้นและอุปกรณ์เซฟตี้", amount: 22300, date: "8 ก.ค. 2569", status: "ordered" },
+  { id: "AP-PO-0503", company: "achieved", site: "โรงเรียนนานาชาติสายไหม", vendor: "ยูนิฟอร์มโปร", description: "ชุดยูนิฟอร์มพนักงานแม่บ้าน 40 ชุด", amount: 68000, date: "12 ก.ค. 2569", status: "approved" },
+  { id: "AP-PO-0504", company: "achieved", site: "Central Plaza สาขาลาดพร้าว", vendor: "เคมีภัณฑ์สะอาด", description: "เคมีขัดพื้นหินอ่อน", amount: 15600, date: "15 ก.ค. 2569", status: "pending" },
+  { id: "AP-PO-0505", company: "achieved", site: "โรงพยาบาลกรุงเทพพัฒนา", vendor: "เครื่องจักรทำความสะอาด", description: "เครื่องขัดพื้นไฟฟ้า 2 เครื่อง", amount: 89000, date: "18 ก.ค. 2569", status: "pending" },
+  { id: "AP-PO-0510", company: "achieved", site: "ABC Tower สำนักงานใหญ่", vendor: "อุปกรณ์ทำความสะอาดไทย", description: "ถังขยะแยกประเภท 20 ใบ", amount: 34200, date: "20 ก.ค. 2569", status: "cancelled" },
+ 
+  { id: "EP-PO-3288", company: "engpower", site: "โรงแรม Riverside Grand", vendor: "คูลลิ่งเทคโนโลยี", description: "น้ำยาแอร์ R410A", amount: 27600, date: "24 มิ.ย. 2569", status: "paid" },
+  { id: "EP-PO-3291", company: "engpower", site: "อาคารสำนักงาน สีลม คอมเพล็กซ์", vendor: "เจนเนอเรเตอร์ไทย", description: "แบตเตอรี่สตาร์ทเครื่องกำเนิดไฟฟ้า", amount: 15400, date: "27 มิ.ย. 2569", status: "paid" },
+  { id: "EP-PO-3301", company: "engpower", site: "XYZ Industrial Park โรงงาน A3", vendor: "ไฟฟ้าเซฟตี้ซัพพลาย", description: "อะไหล่เบรกเกอร์ MDB", amount: 76500, date: "2 ก.ค. 2569", status: "paid" },
+  { id: "EP-PO-3302", company: "engpower", site: "คลังสินค้าเย็น ColdChain Logistics", vendor: "คูลลิ่งเทคโนโลยี", description: "คอมเพรสเซอร์ Chiller สำรอง", amount: 245000, date: "9 ก.ค. 2569", status: "ordered" },
+  { id: "EP-PO-3303", company: "engpower", site: "อาคารสำนักงาน สีลม คอมเพล็กซ์", vendor: "เจนเนอเรเตอร์ไทย", description: "น้ำมันเครื่องและไส้กรองเครื่องกำเนิดไฟฟ้า", amount: 18900, date: "13 ก.ค. 2569", status: "approved" },
+  { id: "EP-PO-3304", company: "engpower", site: "XYZ Industrial Park โรงงาน A3", vendor: "ไฟฟ้าเซฟตี้ซัพพลาย", description: "สายไฟและท่อร้อยสาย", amount: 41200, date: "16 ก.ค. 2569", status: "pending" },
+  { id: "EP-PO-3305", company: "engpower", site: "โรงแรม Riverside Grand", vendor: "ลิฟต์เซอร์วิสโปร", description: "อะไหล่ลิฟต์ขนส่งสินค้า", amount: 132000, date: "19 ก.ค. 2569", status: "pending" },
+  { id: "EP-PO-3310", company: "engpower", site: "โรงแรม Riverside Grand", vendor: "ลิฟต์เซอร์วิสโปร", description: "ชุดสายเคเบิลลิฟต์โดยสาร", amount: 58900, date: "21 ก.ค. 2569", status: "cancelled" },
+];
+ 
 /* ------------------------------------------------------------------ */
 /* Small building blocks                                               */
 /* ------------------------------------------------------------------ */
  
-function resolveColor(theme, key) {
-  return STATUS_META[key].color === "ACCENT" ? theme.accent : STATUS_META[key].color;
+function resolveColor(theme, key, meta) {
+  const m = (meta || STATUS_META)[key];
+  return m.color === "ACCENT" ? theme.accent : m.color;
 }
  
-function StatusBadge({ status, theme }) {
-  const meta = STATUS_META[status];
-  const color = resolveColor(theme, status);
+function StatusBadge({ status, theme, meta }) {
+  const metaSet = meta || STATUS_META;
+  const item = metaSet[status];
+  const color = resolveColor(theme, status, metaSet);
   return (
     <span
       style={{
@@ -216,7 +303,7 @@ function StatusBadge({ status, theme }) {
       }}
     >
       <span style={{ width: 6, height: 6, borderRadius: 999, backgroundColor: color }} />
-      {meta.label}
+      {item.label}
     </span>
   );
 }
@@ -249,6 +336,33 @@ function KpiCard({ icon: Icon, label, value, sub, theme, tint }) {
 }
  
 /* ------------------------------------------------------------------ */
+/* Thai date helpers (for PO monthly / weekly grouping)                */
+/* ------------------------------------------------------------------ */
+ 
+function parseThaiDate(str) {
+  // รูปแบบที่รองรับ: "18 ก.ค. 2569"
+  if (!str) return null;
+  const parts = str.trim().split(/\s+/);
+  if (parts.length < 3) return null;
+  const day = parseInt(parts[0], 10);
+  const month = parts[1];
+  const year = parts[2];
+  if (Number.isNaN(day)) return null;
+  return { day, month, year, monthKey: `${month} ${year}` };
+}
+ 
+function weekBucketLabel(day) {
+  if (day <= 7) return "สัปดาห์ที่ 1 (1-7)";
+  if (day <= 14) return "สัปดาห์ที่ 2 (8-14)";
+  if (day <= 21) return "สัปดาห์ที่ 3 (15-21)";
+  return "สัปดาห์ที่ 4 (22-31)";
+}
+ 
+function formatBaht(n) {
+  return n.toLocaleString("th-TH") + " บาท";
+}
+ 
+/* ------------------------------------------------------------------ */
 /* Main component                                                      */
 /* ------------------------------------------------------------------ */
  
@@ -261,12 +375,23 @@ function Dashboard({ onLogout }) {
   const [statusFilter, setStatusFilter] = useState("all");
   const [reportPeriod, setReportPeriod] = useState("week");
  
+  const [poSearch, setPoSearch] = useState("");
+  const [poVendorFilter, setPoVendorFilter] = useState("all");
+  const [poStatusFilter, setPoStatusFilter] = useState("all");
+  const [poSummaryPeriod, setPoSummaryPeriod] = useState("month");
+ 
+  const [customSheetState, setCustomSheetState] = useState({});
+ 
   const company = COMPANIES[companyId];
   const theme = company.theme;
  
   const [tasksData, setTasksData] = useState(SAMPLE_TASKS);
   const [loadingTasks, setLoadingTasks] = useState(false);
   const [loadError, setLoadError] = useState("");
+ 
+  const [posData, setPosData] = useState(SAMPLE_POS);
+  const [loadingPos, setLoadingPos] = useState(false);
+  const [poLoadError, setPoLoadError] = useState("");
  
   useEffect(() => {
     if (!SHEET_CSV_URL) return; // ยังไม่ได้ตั้งค่า Google Sheet ใช้ข้อมูลตัวอย่างต่อไป
@@ -300,6 +425,76 @@ function Dashboard({ onLogout }) {
       .finally(() => setLoadingTasks(false));
   }, []);
  
+  useEffect(() => {
+    if (!PO_SHEET_CSV_URL) return; // ยังไม่ได้ตั้งค่า Google Sheet ใช้ข้อมูลตัวอย่าง PO ต่อไป
+    setLoadingPos(true);
+    fetch(PO_SHEET_CSV_URL)
+      .then((res) => {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.text();
+      })
+      .then((csvText) => {
+        const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+        const rows = parsed.data
+          .map((r) => ({
+            id: (r.id || "").toString().trim(),
+            company: (r.company || "").toString().trim(),
+            site: (r.site || "").toString().trim(),
+            vendor: (r.vendor || "").toString().trim(),
+            description: (r.description || "").toString().trim(),
+            amount: parseFloat((r.amount || "0").toString().replace(/,/g, "")) || 0,
+            date: (r.date || "").toString().trim(),
+            status: (r.status || "").toString().trim(),
+          }))
+          .filter((r) => r.id);
+        if (rows.length) setPosData(rows);
+        setPoLoadError("");
+      })
+      .catch((err) => {
+        setPoLoadError("โหลดข้อมูล PO จาก Google Sheet ไม่สำเร็จ กำลังแสดงข้อมูลตัวอย่างแทน (" + err.message + ")");
+      })
+      .finally(() => setLoadingPos(false));
+  }, []);
+ 
+  // โหลดข้อมูลของเมนู Google Sheet แบบกำหนดเอง (ประกันรถ, Site Master ฯลฯ) แบบ lazy ตอนเปิดเมนูนั้นครั้งแรก
+  useEffect(() => {
+    if (!view.startsWith("sheet-")) return;
+    const sheetId = view.replace("sheet-", "");
+    const module = CUSTOM_SHEETS.find((m) => m.id === sheetId);
+    if (!module || !module.sheetUrl) return;
+    const existing = customSheetState[sheetId];
+    if (existing && (existing.loading || existing.loaded)) return;
+ 
+    setCustomSheetState((prev) => ({ ...prev, [sheetId]: { rows: [], columns: [], loading: true, loaded: false, error: "" } }));
+    fetch(module.sheetUrl)
+      .then((res) => {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.text();
+      })
+      .then((csvText) => {
+        const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+        const columns = parsed.meta && parsed.meta.fields ? parsed.meta.fields : [];
+        setCustomSheetState((prev) => ({
+          ...prev,
+          [sheetId]: { rows: parsed.data, columns, loading: false, loaded: true, error: "" },
+        }));
+      })
+      .catch((err) => {
+        setCustomSheetState((prev) => ({
+          ...prev,
+          [sheetId]: { rows: [], columns: [], loading: false, loaded: true, error: err.message },
+        }));
+      });
+  }, [view]);
+ 
+  const reloadCustomSheet = (sheetId) => {
+    setCustomSheetState((prev) => {
+      const next = { ...prev };
+      delete next[sheetId];
+      return next;
+    });
+  };
+ 
   const companyTasks = useMemo(() => tasksData.filter((t) => t.company === companyId), [tasksData, companyId]);
   const sites = useMemo(() => Array.from(new Set(companyTasks.map((t) => t.site))), [companyTasks]);
   const assignees = useMemo(() => Array.from(new Set(companyTasks.map((t) => t.assignee))), [companyTasks]);
@@ -325,7 +520,7 @@ function Dashboard({ onLogout }) {
   }, [companyTasks]);
  
   const pieData = ["pending", "inprogress", "completed", "overdue"].map((k) => ({
-    key: k, name: STATUS_META[k].label, value: counts[k], color: resolveColor(theme, k),
+    key: k, name: STATUS_META[k].label, value: counts[k], color: resolveColor(theme, k, STATUS_META),
   }));
  
   const siteData = sites.map((s) => ({
@@ -334,20 +529,76 @@ function Dashboard({ onLogout }) {
     count: companyTasks.filter((t) => t.site === s).length,
   }));
  
+  // --- PO derived data ---
+  const companyPOs = useMemo(() => posData.filter((p) => p.company === companyId), [posData, companyId]);
+  const poVendors = useMemo(() => Array.from(new Set(companyPOs.map((p) => p.vendor))), [companyPOs]);
+ 
+  const filteredPOs = useMemo(() => {
+    return companyPOs.filter((p) => {
+      if (poVendorFilter !== "all" && p.vendor !== poVendorFilter) return false;
+      if (poStatusFilter !== "all" && p.status !== poStatusFilter) return false;
+      if (poSearch.trim()) {
+        const q = poSearch.trim().toLowerCase();
+        const hay = `${p.id} ${p.site} ${p.vendor} ${p.description}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [companyPOs, poVendorFilter, poStatusFilter, poSearch]);
+ 
+  const poCounts = useMemo(() => {
+    const c = { total: companyPOs.length, totalAmount: 0, pending: 0, approved: 0, ordered: 0, paid: 0, cancelled: 0 };
+    companyPOs.forEach((p) => {
+      c.totalAmount += p.amount || 0;
+      if (c[p.status] !== undefined) c[p.status] += 1;
+    });
+    return c;
+  }, [companyPOs]);
+ 
+  const poPieData = ["pending", "approved", "ordered", "paid", "cancelled"].map((k) => {
+    const sum = companyPOs.filter((p) => p.status === k).reduce((a, p) => a + (p.amount || 0), 0);
+    return { key: k, name: PO_STATUS_META[k].label, value: sum, color: resolveColor(theme, k, PO_STATUS_META) };
+  });
+ 
+  const poBucketData = useMemo(() => {
+    const buckets = {};
+    companyPOs.forEach((p) => {
+      const d = parseThaiDate(p.date);
+      if (!d) return;
+      const key = poSummaryPeriod === "month" ? d.monthKey : `${d.month} · ${weekBucketLabel(d.day)}`;
+      if (!buckets[key]) buckets[key] = { label: key, amount: 0, count: 0, sortDay: d.day, sortMonth: d.monthKey };
+      buckets[key].amount += p.amount || 0;
+      buckets[key].count += 1;
+    });
+    return Object.values(buckets).sort((a, b) => (a.sortMonth > b.sortMonth ? 1 : a.sortMonth < b.sortMonth ? -1 : a.sortDay - b.sortDay));
+  }, [companyPOs, poSummaryPeriod]);
+ 
   const clearFilters = () => {
     setSearch(""); setSiteFilter("all"); setAssigneeFilter("all"); setStatusFilter("all");
+  };
+  const clearPoFilters = () => {
+    setPoSearch(""); setPoVendorFilter("all"); setPoStatusFilter("all");
   };
  
   const NAV_ITEMS = [
     { id: "dashboard", label: "แดชบอร์ด", icon: LayoutDashboard },
     { id: "tasks", label: "รายการงาน", icon: ListChecks },
+    { id: "po", label: "รายการ PO", icon: Receipt },
+    { id: "po-summary", label: "สรุปยอด PO", icon: TrendingUp },
     { id: "report", label: "รายงานสรุป", icon: FileText },
+    ...CUSTOM_SHEETS.filter((m) => !m.company || m.company === companyId).map((m) => ({
+      id: `sheet-${m.id}`,
+      label: m.label,
+      icon: ICONS_BY_NAME[m.icon] || FileSpreadsheet,
+    })),
   ];
  
   const inputStyle = {
     background: theme.surfaceAlt, border: `1px solid ${theme.border}`, borderRadius: 10,
     color: theme.text, fontSize: 13.5, padding: "8px 12px", outline: "none",
   };
+ 
+  const activeSheetModule = view.startsWith("sheet-") ? CUSTOM_SHEETS.find((m) => m.id === view.replace("sheet-", "")) : null;
  
   return (
     <div
@@ -408,7 +659,7 @@ function Dashboard({ onLogout }) {
             {company.monogram}
           </div>
           <div>
-            <div style={{ fontSize: 12.5, fontWeight: 700, color: "#fff", fontFamily: "'Space Grotesk', sans-serif" }}>OpsPulse</div>
+            <div style={{ fontSize: 12.5, fontWeight: 700, color: "#fff", fontFamily: "'Space Grotesk', sans-serif" }}>ACHIEVED GROUP</div>
             <div style={{ fontSize: 10.5, color: theme.sidebarMuted }}>Task &amp; Executive View</div>
           </div>
         </div>
@@ -433,7 +684,7 @@ function Dashboard({ onLogout }) {
           })}
         </div>
  
-        <nav className="op-nav" style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+        <nav className="op-nav op-scroll" style={{ display: "flex", flexDirection: "column", gap: 3, overflowY: "auto" }}>
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const active = view === item.id;
@@ -473,7 +724,10 @@ function Dashboard({ onLogout }) {
             <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 22, fontWeight: 700, margin: 0 }}>
               {view === "dashboard" && company.name}
               {view === "tasks" && company.name}
+              {view === "po" && "รายการใบสั่งซื้อ (PO)"}
+              {view === "po-summary" && "สรุปยอด PO"}
               {view === "report" && "รายงานสรุปผลการดำเนินงาน"}
+              {activeSheetModule && activeSheetModule.label}
             </h1>
             <p style={{ fontSize: 13, color: theme.textMuted, margin: "4px 0 0" }}>{company.tagline}</p>
           </div>
@@ -518,10 +772,36 @@ function Dashboard({ onLogout }) {
           />
         )}
  
+        {view === "po" && (
+          <POListView
+            theme={theme} inputStyle={inputStyle} vendors={poVendors}
+            search={poSearch} setSearch={setPoSearch}
+            vendorFilter={poVendorFilter} setVendorFilter={setPoVendorFilter}
+            statusFilter={poStatusFilter} setStatusFilter={setPoStatusFilter}
+            clearFilters={clearPoFilters} filteredPOs={filteredPOs}
+            loading={loadingPos} error={poLoadError}
+          />
+        )}
+ 
+        {view === "po-summary" && (
+          <POSummaryView
+            theme={theme} poCounts={poCounts} poPieData={poPieData} poBucketData={poBucketData}
+            period={poSummaryPeriod} setPeriod={setPoSummaryPeriod}
+          />
+        )}
+ 
         {view === "report" && (
           <ReportView
             theme={theme} company={company} counts={counts} siteData={siteData}
             reportPeriod={reportPeriod} setReportPeriod={setReportPeriod}
+          />
+        )}
+ 
+        {activeSheetModule && (
+          <GenericSheetView
+            theme={theme} inputStyle={inputStyle} module={activeSheetModule}
+            state={customSheetState[activeSheetModule.id]}
+            onReload={() => reloadCustomSheet(activeSheetModule.id)}
           />
         )}
       </main>
@@ -667,6 +947,295 @@ function TasksView({
 }
  
 /* ------------------------------------------------------------------ */
+/* PO (Purchase Order) list view                                       */
+/* ------------------------------------------------------------------ */
+ 
+function POListView({
+  theme, inputStyle, vendors,
+  search, setSearch, vendorFilter, setVendorFilter,
+  statusFilter, setStatusFilter, clearFilters, filteredPOs,
+  loading, error,
+}) {
+  const totalAmount = filteredPOs.reduce((a, p) => a + (p.amount || 0), 0);
+  return (
+    <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, boxShadow: theme.shadow, overflow: "hidden" }}>
+      {loading && (
+        <div style={{ padding: "10px 16px", fontSize: 12.5, color: theme.textMuted, borderBottom: `1px solid ${theme.border}` }}>
+          กำลังโหลดข้อมูล PO ล่าสุดจาก Google Sheet…
+        </div>
+      )}
+      {error && (
+        <div style={{ padding: "10px 16px", fontSize: 12.5, color: "#E2482F", background: "#E2482F1A", borderBottom: `1px solid ${theme.border}` }}>
+          {error}
+        </div>
+      )}
+      <div style={{ padding: 16, display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", borderBottom: `1px solid ${theme.border}` }}>
+        <div style={{ position: "relative", flex: "1 1 220px" }}>
+          <Search size={14} style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: theme.textMuted }} />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="ค้นหาเลข PO, ไซต์งาน, ผู้ขาย, รายการ..."
+            style={{ ...inputStyle, width: "100%", paddingLeft: 30 }}
+          />
+        </div>
+        <select className="op-sel" value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} style={{ ...inputStyle, minWidth: 160 }}>
+          <option value="all">ทุกผู้ขาย / ร้านค้า</option>
+          {vendors.map((v) => <option key={v} value={v}>{v}</option>)}
+        </select>
+        <select className="op-sel" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ ...inputStyle, minWidth: 150 }}>
+          <option value="all">ทุกสถานะ PO</option>
+          {Object.entries(PO_STATUS_META).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+        </select>
+        <button onClick={clearFilters} style={{ ...inputStyle, display: "flex", alignItems: "center", gap: 5, cursor: "pointer", color: theme.textMuted }}>
+          <X size={13} /> ล้างตัวกรอง
+        </button>
+        <div style={{ fontSize: 12, color: theme.textMuted, marginLeft: "auto", textAlign: "right" }}>
+          พบ {filteredPOs.length} รายการ · รวม {formatBaht(totalAmount)}
+        </div>
+      </div>
+ 
+      <div className="op-scroll" style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <thead>
+            <tr style={{ background: theme.surfaceAlt }}>
+              {["เลขที่ PO", "ไซต์งาน", "ผู้ขาย / ร้านค้า", "รายการ", "จำนวนเงิน", "วันที่สั่งซื้อ", "สถานะ"].map((h) => (
+                <th key={h} style={{ textAlign: "left", padding: "10px 14px", fontSize: 11.5, fontWeight: 600, color: theme.textMuted, whiteSpace: "nowrap" }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPOs.map((p) => (
+              <tr key={p.id} className="op-row" style={{ borderTop: `1px solid ${theme.border}`, transition: "background 0.1s ease" }}>
+                <td style={{ padding: "11px 14px", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: theme.primary, whiteSpace: "nowrap" }}>{p.id}</td>
+                <td style={{ padding: "11px 14px", maxWidth: 200 }}>{p.site}</td>
+                <td style={{ padding: "11px 14px", whiteSpace: "nowrap" }}>{p.vendor}</td>
+                <td style={{ padding: "11px 14px", maxWidth: 260, color: theme.text }}>{p.description}</td>
+                <td style={{ padding: "11px 14px", whiteSpace: "nowrap", fontWeight: 600 }}>{formatBaht(p.amount || 0)}</td>
+                <td style={{ padding: "11px 14px", whiteSpace: "nowrap", color: theme.textMuted, fontSize: 12.5 }}>{p.date}</td>
+                <td style={{ padding: "11px 14px" }}><StatusBadge status={p.status} theme={theme} meta={PO_STATUS_META} /></td>
+              </tr>
+            ))}
+            {filteredPOs.length === 0 && (
+              <tr>
+                <td colSpan={7} style={{ padding: "40px 14px", textAlign: "center", color: theme.textMuted, fontSize: 13 }}>
+                  ไม่พบ PO ที่ตรงกับตัวกรองที่เลือก ลองปรับเงื่อนไขการค้นหาใหม่
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+ 
+/* ------------------------------------------------------------------ */
+/* PO summary view (สรุปยอด PO รายสัปดาห์ / รายเดือน)                   */
+/* ------------------------------------------------------------------ */
+ 
+function POSummaryView({ theme, poCounts, poPieData, poBucketData, period, setPeriod }) {
+  const outstanding = poCounts.pending + poCounts.approved + poCounts.ordered;
+  return (
+    <>
+      <div className="no-print" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
+        <div style={{ display: "flex", background: theme.surfaceAlt, borderRadius: 10, padding: 3, gap: 3 }}>
+          {[["week", "รายสัปดาห์"], ["month", "รายเดือน"]].map(([k, l]) => (
+            <button
+              key={k}
+              onClick={() => setPeriod(k)}
+              style={{
+                border: "none", cursor: "pointer", borderRadius: 8, padding: "7px 14px", fontSize: 12.5, fontWeight: 600,
+                background: period === k ? theme.primary : "transparent",
+                color: period === k ? "#fff" : theme.textMuted,
+              }}
+            >
+              {l}
+            </button>
+          ))}
+        </div>
+      </div>
+ 
+      <div className="kpi-row" style={{ display: "flex", gap: 16, marginBottom: 22, flexWrap: "wrap" }}>
+        <KpiCard icon={Receipt} label="ยอด PO รวมทั้งหมด" value={formatBaht(poCounts.totalAmount)} sub={`${poCounts.total} รายการ`} theme={theme} tint={theme.primary} />
+        <KpiCard icon={Clock} label="รอดำเนินการ" value={outstanding} sub="รออนุมัติ / อนุมัติแล้ว / สั่งซื้อแล้ว" theme={theme} tint={theme.accent} />
+        <KpiCard icon={CheckCircle2} label="ชำระเงินแล้ว" value={poCounts.paid} sub="ปิด PO เรียบร้อย" theme={theme} tint="#22A559" />
+        <KpiCard icon={AlertTriangle} label="ยกเลิก" value={poCounts.cancelled} sub="PO ที่ถูกยกเลิก" theme={theme} tint="#E2482F" />
+      </div>
+ 
+      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 16 }}>
+        <div style={{ flex: "1 1 340px", background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, padding: 20, boxShadow: theme.shadow }}>
+          <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14.5, margin: "0 0 4px" }}>ยอดเงิน PO ตามสถานะ</h3>
+          <p style={{ fontSize: 12, color: theme.textMuted, margin: "0 0 8px" }}>PO Amount by Status</p>
+          <div style={{ height: 230 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={poPieData} dataKey="value" nameKey="name" innerRadius={54} outerRadius={82} paddingAngle={3} strokeWidth={0}>
+                  {poPieData.map((d) => <Cell key={d.key} fill={d.color} />)}
+                </Pie>
+                <Tooltip formatter={(v) => formatBaht(v)} contentStyle={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 10, fontSize: 12.5, color: theme.text }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 16px", marginTop: 4 }}>
+            {poPieData.map((d) => (
+              <div key={d.key} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: theme.textMuted }}>
+                <span style={{ width: 8, height: 8, borderRadius: 999, background: d.color }} />
+                {d.name}
+              </div>
+            ))}
+          </div>
+        </div>
+ 
+        <div style={{ flex: "1.3 1 380px", background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, padding: 20, boxShadow: theme.shadow }}>
+          <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14.5, margin: "0 0 4px" }}>
+            {period === "month" ? "ยอด PO แยกตามเดือน" : "ยอด PO แยกตามสัปดาห์"}
+          </h3>
+          <p style={{ fontSize: 12, color: theme.textMuted, margin: "0 0 8px" }}>{period === "month" ? "Monthly Totals" : "Weekly Totals"}</p>
+          <div style={{ height: 230 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={poBucketData} margin={{ left: 4, right: 16, top: 4, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke={theme.border} vertical={false} />
+                <XAxis dataKey="label" tick={{ fontSize: 10.5, fill: theme.textMuted }} axisLine={{ stroke: theme.border }} tickLine={false} interval={0} angle={-15} textAnchor="end" height={50} />
+                <YAxis tick={{ fontSize: 11, fill: theme.textMuted }} axisLine={{ stroke: theme.border }} tickLine={false} />
+                <Tooltip
+                  formatter={(v) => formatBaht(v)}
+                  contentStyle={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 10, fontSize: 12.5, color: theme.text }}
+                />
+                <Bar dataKey="amount" fill={theme.primary} radius={[6, 6, 0, 0]} barSize={26} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+ 
+      <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, boxShadow: theme.shadow, overflow: "hidden" }}>
+        <div style={{ padding: "14px 20px", borderBottom: `1px solid ${theme.border}` }}>
+          <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14.5, margin: 0 }}>ตารางสรุปยอด PO</h3>
+        </div>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <thead>
+            <tr style={{ background: theme.surfaceAlt }}>
+              <th style={{ textAlign: "left", padding: "9px 16px", fontSize: 11.5, color: theme.textMuted, fontWeight: 600 }}>{period === "month" ? "เดือน" : "สัปดาห์"}</th>
+              <th style={{ textAlign: "right", padding: "9px 16px", fontSize: 11.5, color: theme.textMuted, fontWeight: 600 }}>จำนวน PO</th>
+              <th style={{ textAlign: "right", padding: "9px 16px", fontSize: 11.5, color: theme.textMuted, fontWeight: 600 }}>ยอดรวม</th>
+            </tr>
+          </thead>
+          <tbody>
+            {poBucketData.map((b) => (
+              <tr key={b.label} style={{ borderTop: `1px solid ${theme.border}` }}>
+                <td style={{ padding: "10px 16px" }}>{b.label}</td>
+                <td style={{ padding: "10px 16px", textAlign: "right" }}>{b.count}</td>
+                <td style={{ padding: "10px 16px", textAlign: "right", fontWeight: 600 }}>{formatBaht(b.amount)}</td>
+              </tr>
+            ))}
+            {poBucketData.length === 0 && (
+              <tr>
+                <td colSpan={3} style={{ padding: "30px 16px", textAlign: "center", color: theme.textMuted }}>ยังไม่มีข้อมูล PO ในช่วงเวลานี้</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
+}
+ 
+/* ------------------------------------------------------------------ */
+/* Generic Google-Sheet-linked view (ประกันรถ, Site Master ฯลฯ)         */
+/* ------------------------------------------------------------------ */
+ 
+function GenericSheetView({ theme, inputStyle, module, state, onReload }) {
+  const [search, setSearch] = useState("");
+ 
+  if (!module.sheetUrl) {
+    return (
+      <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, padding: 28, boxShadow: theme.shadow, textAlign: "center" }}>
+        <FileSpreadsheet size={28} style={{ color: theme.textMuted, marginBottom: 10 }} />
+        <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, margin: "0 0 6px" }}>ยังไม่ได้เชื่อมต่อ Google Sheet สำหรับ “{module.label}”</h3>
+        <p style={{ fontSize: 12.5, color: theme.textMuted, maxWidth: 460, margin: "0 auto" }}>
+          เปิดไฟล์ Google Sheet ที่ต้องการ → File → Share → Publish to web → เลือกรูปแบบ CSV แล้วนำลิงก์ไปใส่ในตัวแปร <code>sheetUrl</code>
+          ของรายการ <code>{module.id}</code> ใน CUSTOM_SHEETS ที่ต้นไฟล์นี้
+        </p>
+      </div>
+    );
+  }
+ 
+  const loading = state && state.loading;
+  const error = state && state.error;
+  const rows = (state && state.rows) || [];
+  const columns = (state && state.columns) || (rows[0] ? Object.keys(rows[0]) : []);
+ 
+  const filteredRows = search.trim()
+    ? rows.filter((r) => columns.some((c) => (r[c] || "").toString().toLowerCase().includes(search.trim().toLowerCase())))
+    : rows;
+ 
+  return (
+    <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, boxShadow: theme.shadow, overflow: "hidden" }}>
+      <div style={{ padding: 16, display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", borderBottom: `1px solid ${theme.border}` }}>
+        <div style={{ position: "relative", flex: "1 1 220px" }}>
+          <Search size={14} style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: theme.textMuted }} />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={`ค้นหาใน ${module.label}...`}
+            style={{ ...inputStyle, width: "100%", paddingLeft: 30 }}
+          />
+        </div>
+        <button onClick={onReload} style={{ ...inputStyle, display: "flex", alignItems: "center", gap: 6, cursor: "pointer", color: theme.textMuted }}>
+          <RefreshCw size={13} /> โหลดข้อมูลใหม่
+        </button>
+        <div style={{ fontSize: 12, color: theme.textMuted, marginLeft: "auto" }}>
+          {loading ? "กำลังโหลด…" : `พบ ${filteredRows.length} แถว`}
+        </div>
+      </div>
+ 
+      {error && (
+        <div style={{ padding: "10px 16px", fontSize: 12.5, color: "#E2482F", background: "#E2482F1A", borderBottom: `1px solid ${theme.border}` }}>
+          โหลดข้อมูลไม่สำเร็จ: {error}
+        </div>
+      )}
+ 
+      {loading && (
+        <div style={{ padding: "40px 16px", textAlign: "center", color: theme.textMuted, fontSize: 13 }}>กำลังโหลดข้อมูลจาก Google Sheet…</div>
+      )}
+ 
+      {!loading && columns.length > 0 && (
+        <div className="op-scroll" style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+            <thead>
+              <tr style={{ background: theme.surfaceAlt }}>
+                {columns.map((c) => (
+                  <th key={c} style={{ textAlign: "left", padding: "10px 14px", fontSize: 11.5, fontWeight: 600, color: theme.textMuted, whiteSpace: "nowrap" }}>{c}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredRows.map((r, i) => (
+                <tr key={i} className="op-row" style={{ borderTop: `1px solid ${theme.border}` }}>
+                  {columns.map((c) => (
+                    <td key={c} style={{ padding: "11px 14px", whiteSpace: "nowrap" }}>{(r[c] || "").toString()}</td>
+                  ))}
+                </tr>
+              ))}
+              {filteredRows.length === 0 && (
+                <tr>
+                  <td colSpan={columns.length} style={{ padding: "40px 14px", textAlign: "center", color: theme.textMuted, fontSize: 13 }}>ไม่พบข้อมูล</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+ 
+      {!loading && !error && columns.length === 0 && (
+        <div style={{ padding: "40px 16px", textAlign: "center", color: theme.textMuted, fontSize: 13 }}>ยังไม่มีข้อมูลในชีตนี้</div>
+      )}
+    </div>
+  );
+}
+ 
+/* ------------------------------------------------------------------ */
 /* Report view                                                         */
 /* ------------------------------------------------------------------ */
  
@@ -763,7 +1332,7 @@ function ReportView({ theme, company, counts, siteData, reportPeriod, setReportP
         </table>
  
         <div style={{ marginTop: 22, fontSize: 11.5, color: theme.textMuted, textAlign: "right" }}>
-          ออกรายงานโดยระบบ OpsPulse · 20 กรกฎาคม 2569
+          ออกรายงานโดยระบบ ACHIEVED GROUP · 20 กรกฎาคม 2569
         </div>
       </div>
     </div>
