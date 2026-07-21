@@ -946,23 +946,23 @@ const SAMPLE_TASKS = [
  
 // รายการ PO ตัวอย่าง (แทนที่ด้วยข้อมูลจริงผ่าน PO_SHEET_CSV_URL ด้านบนได้)
 const SAMPLE_POS = [
-  { id: "AP-PO-0489", company: "achieved", site: "ABC Tower สำนักงานใหญ่", vendor: "สวนสวยการ์เดน", description: "ปุ๋ยและอุปกรณ์ตัดแต่งสวน", amount: 12800, date: "25 มิ.ย. 2569", status: "paid" },
-  { id: "AP-PO-0492", company: "achieved", site: "Central Plaza สาขาลาดพร้าว", vendor: "ยูนิฟอร์มโปร", description: "ถุงมือยางและอุปกรณ์เซฟตี้", amount: 9700, date: "28 มิ.ย. 2569", status: "paid" },
-  { id: "AP-PO-0501", company: "achieved", site: "ABC Tower สำนักงานใหญ่", vendor: "เคมีภัณฑ์สะอาด", description: "น้ำยาทำความสะอาดพื้นและกระจก (ล็อตเดือน ก.ค.)", amount: 48500, date: "3 ก.ค. 2569", status: "paid" },
-  { id: "AP-PO-0502", company: "achieved", site: "The Grand Residence คอนโด", vendor: "อุปกรณ์ทำความสะอาดไทย", description: "ไม้ถูพื้นและอุปกรณ์เซฟตี้", amount: 22300, date: "8 ก.ค. 2569", status: "ordered" },
-  { id: "AP-PO-0503", company: "achieved", site: "โรงเรียนนานาชาติสายไหม", vendor: "ยูนิฟอร์มโปร", description: "ชุดยูนิฟอร์มพนักงานแม่บ้าน 40 ชุด", amount: 68000, date: "12 ก.ค. 2569", status: "approved" },
-  { id: "AP-PO-0504", company: "achieved", site: "Central Plaza สาขาลาดพร้าว", vendor: "เคมีภัณฑ์สะอาด", description: "เคมีขัดพื้นหินอ่อน", amount: 15600, date: "15 ก.ค. 2569", status: "pending" },
-  { id: "AP-PO-0505", company: "achieved", site: "โรงพยาบาลกรุงเทพพัฒนา", vendor: "เครื่องจักรทำความสะอาด", description: "เครื่องขัดพื้นไฟฟ้า 2 เครื่อง", amount: 89000, date: "18 ก.ค. 2569", status: "pending" },
-  { id: "AP-PO-0510", company: "achieved", site: "ABC Tower สำนักงานใหญ่", vendor: "อุปกรณ์ทำความสะอาดไทย", description: "ถังขยะแยกประเภท 20 ใบ", amount: 34200, date: "20 ก.ค. 2569", status: "cancelled" },
+  { id: "AP-PO-0489", company: "achieved", site: "ABC Tower สำนักงานใหญ่", vendor: "สวนสวยการ์เดน", description: "ปุ๋ยและอุปกรณ์ตัดแต่งสวน", qty: 5, amount: 12800, date: "25 มิ.ย. 2569", status: "paid" },
+  { id: "AP-PO-0492", company: "achieved", site: "Central Plaza สาขาลาดพร้าว", vendor: "ยูนิฟอร์มโปร", description: "ถุงมือยางและอุปกรณ์เซฟตี้", qty: 20, amount: 9700, date: "28 มิ.ย. 2569", status: "paid" },
+  { id: "AP-PO-0501", company: "achieved", site: "ABC Tower สำนักงานใหญ่", vendor: "เคมีภัณฑ์สะอาด", description: "น้ำยาทำความสะอาดพื้นและกระจก (ล็อตเดือน ก.ค.)", qty: 60, amount: 48500, date: "3 ก.ค. 2569", status: "paid" },
+  { id: "AP-PO-0502", company: "achieved", site: "The Grand Residence คอนโด", vendor: "อุปกรณ์ทำความสะอาดไทย", description: "ไม้ถูพื้นและอุปกรณ์เซฟตี้", qty: 30, amount: 22300, date: "8 ก.ค. 2569", status: "ordered" },
+  { id: "AP-PO-0503", company: "achieved", site: "โรงเรียนนานาชาติสายไหม", vendor: "ยูนิฟอร์มโปร", description: "ชุดยูนิฟอร์มพนักงานแม่บ้าน 40 ชุด", qty: 40, amount: 68000, date: "12 ก.ค. 2569", status: "approved" },
+  { id: "AP-PO-0504", company: "achieved", site: "Central Plaza สาขาลาดพร้าว", vendor: "เคมีภัณฑ์สะอาด", description: "เคมีขัดพื้นหินอ่อน", qty: 10, amount: 15600, date: "15 ก.ค. 2569", status: "pending" },
+  { id: "AP-PO-0505", company: "achieved", site: "โรงพยาบาลกรุงเทพพัฒนา", vendor: "เครื่องจักรทำความสะอาด", description: "เครื่องขัดพื้นไฟฟ้า 2 เครื่อง", qty: 2, amount: 89000, date: "18 ก.ค. 2569", status: "pending" },
+  { id: "AP-PO-0510", company: "achieved", site: "ABC Tower สำนักงานใหญ่", vendor: "อุปกรณ์ทำความสะอาดไทย", description: "ถังขยะแยกประเภท 20 ใบ", qty: 20, amount: 34200, date: "20 ก.ค. 2569", status: "cancelled" },
  
-  { id: "EP-PO-3288", company: "engpower", site: "โรงแรม Riverside Grand", vendor: "คูลลิ่งเทคโนโลยี", description: "น้ำยาแอร์ R410A", amount: 27600, date: "24 มิ.ย. 2569", status: "paid" },
-  { id: "EP-PO-3291", company: "engpower", site: "อาคารสำนักงาน สีลม คอมเพล็กซ์", vendor: "เจนเนอเรเตอร์ไทย", description: "แบตเตอรี่สตาร์ทเครื่องกำเนิดไฟฟ้า", amount: 15400, date: "27 มิ.ย. 2569", status: "paid" },
-  { id: "EP-PO-3301", company: "engpower", site: "XYZ Industrial Park โรงงาน A3", vendor: "ไฟฟ้าเซฟตี้ซัพพลาย", description: "อะไหล่เบรกเกอร์ MDB", amount: 76500, date: "2 ก.ค. 2569", status: "paid" },
-  { id: "EP-PO-3302", company: "engpower", site: "คลังสินค้าเย็น ColdChain Logistics", vendor: "คูลลิ่งเทคโนโลยี", description: "คอมเพรสเซอร์ Chiller สำรอง", amount: 245000, date: "9 ก.ค. 2569", status: "ordered" },
-  { id: "EP-PO-3303", company: "engpower", site: "อาคารสำนักงาน สีลม คอมเพล็กซ์", vendor: "เจนเนอเรเตอร์ไทย", description: "น้ำมันเครื่องและไส้กรองเครื่องกำเนิดไฟฟ้า", amount: 18900, date: "13 ก.ค. 2569", status: "approved" },
-  { id: "EP-PO-3304", company: "engpower", site: "XYZ Industrial Park โรงงาน A3", vendor: "ไฟฟ้าเซฟตี้ซัพพลาย", description: "สายไฟและท่อร้อยสาย", amount: 41200, date: "16 ก.ค. 2569", status: "pending" },
-  { id: "EP-PO-3305", company: "engpower", site: "โรงแรม Riverside Grand", vendor: "ลิฟต์เซอร์วิสโปร", description: "อะไหล่ลิฟต์ขนส่งสินค้า", amount: 132000, date: "19 ก.ค. 2569", status: "pending" },
-  { id: "EP-PO-3310", company: "engpower", site: "โรงแรม Riverside Grand", vendor: "ลิฟต์เซอร์วิสโปร", description: "ชุดสายเคเบิลลิฟต์โดยสาร", amount: 58900, date: "21 ก.ค. 2569", status: "cancelled" },
+  { id: "EP-PO-3288", company: "engpower", site: "โรงแรม Riverside Grand", vendor: "คูลลิ่งเทคโนโลยี", description: "น้ำยาแอร์ R410A", qty: 8, amount: 27600, date: "24 มิ.ย. 2569", status: "paid" },
+  { id: "EP-PO-3291", company: "engpower", site: "อาคารสำนักงาน สีลม คอมเพล็กซ์", vendor: "เจนเนอเรเตอร์ไทย", description: "แบตเตอรี่สตาร์ทเครื่องกำเนิดไฟฟ้า", qty: 2, amount: 15400, date: "27 มิ.ย. 2569", status: "paid" },
+  { id: "EP-PO-3301", company: "engpower", site: "XYZ Industrial Park โรงงาน A3", vendor: "ไฟฟ้าเซฟตี้ซัพพลาย", description: "อะไหล่เบรกเกอร์ MDB", qty: 4, amount: 76500, date: "2 ก.ค. 2569", status: "paid" },
+  { id: "EP-PO-3302", company: "engpower", site: "คลังสินค้าเย็น ColdChain Logistics", vendor: "คูลลิ่งเทคโนโลยี", description: "คอมเพรสเซอร์ Chiller สำรอง", qty: 1, amount: 245000, date: "9 ก.ค. 2569", status: "ordered" },
+  { id: "EP-PO-3303", company: "engpower", site: "อาคารสำนักงาน สีลม คอมเพล็กซ์", vendor: "เจนเนอเรเตอร์ไทย", description: "น้ำมันเครื่องและไส้กรองเครื่องกำเนิดไฟฟ้า", qty: 12, amount: 18900, date: "13 ก.ค. 2569", status: "approved" },
+  { id: "EP-PO-3304", company: "engpower", site: "XYZ Industrial Park โรงงาน A3", vendor: "ไฟฟ้าเซฟตี้ซัพพลาย", description: "สายไฟและท่อร้อยสาย", qty: 15, amount: 41200, date: "16 ก.ค. 2569", status: "pending" },
+  { id: "EP-PO-3305", company: "engpower", site: "โรงแรม Riverside Grand", vendor: "ลิฟต์เซอร์วิสโปร", description: "อะไหล่ลิฟต์ขนส่งสินค้า", qty: 3, amount: 132000, date: "19 ก.ค. 2569", status: "pending" },
+  { id: "EP-PO-3310", company: "engpower", site: "โรงแรม Riverside Grand", vendor: "ลิฟต์เซอร์วิสโปร", description: "ชุดสายเคเบิลลิฟต์โดยสาร", qty: 6, amount: 58900, date: "21 ก.ค. 2569", status: "cancelled" },
 ];
  
 /* ------------------------------------------------------------------ */
@@ -1057,7 +1057,6 @@ function Dashboard({ onLogout }) {
   const [siteFilter, setSiteFilter] = useState("all");
   const [assigneeFilter, setAssigneeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [reportPeriod, setReportPeriod] = useState("week");
  
   const [poSearch, setPoSearch] = useState("");
   const [poVendorFilter, setPoVendorFilter] = useState("all");
@@ -1128,6 +1127,7 @@ function Dashboard({ onLogout }) {
             site: (r.site || "").toString().trim(),
             vendor: (r.vendor || "").toString().trim(),
             description: (r.description || "").toString().trim(),
+            qty: parseFloat((r.qty || "0").toString().replace(/,/g, "")) || 0,
             amount: parseFloat((r.amount || "0").toString().replace(/,/g, "")) || 0,
             date: (r.date || "").toString().trim(),
             status: (r.status || "").toString().trim(),
@@ -1217,7 +1217,10 @@ function Dashboard({ onLogout }) {
  
   // --- PO derived data ---
   const companyPOs = useMemo(() => posData.filter((p) => p.company === companyId), [posData, companyId]);
-  const poVendors = useMemo(() => Array.from(new Set(companyPOs.map((p) => p.vendor))), [companyPOs]);
+  const poVendors = useMemo(() => {
+    const fromData = companyPOs.map((p) => p.vendor);
+    return Array.from(new Set([...fromData, "งานเพิ่ม"]));
+  }, [companyPOs]);
  
   const filteredPOs = useMemo(() => {
     return companyPOs.filter((p) => {
@@ -1269,6 +1272,17 @@ function Dashboard({ onLogout }) {
     });
   }, [siteSearch]);
  
+  // --- Insurance (ประกันรถ) derived summary ---
+  const insuranceSummary = useMemo(() => {
+    const list = SAMPLE_INSURANCE;
+    const total = list.length;
+    const taxSoon = list.filter((v) => v.taxDaysLeft !== "" && v.taxDaysLeft !== undefined && Number(v.taxDaysLeft) <= 30).length;
+    const actSoon = list.filter((v) => v.actDaysLeft !== "" && v.actDaysLeft !== undefined && Number(v.actDaysLeft) <= 30).length;
+    const insSoon = list.filter((v) => v.insDaysLeft !== "" && v.insDaysLeft !== undefined && Number(v.insDaysLeft) <= 30).length;
+    const noIns = list.filter((v) => !v.insClass || v.insClass === "-").length;
+    return { total, taxSoon, actSoon, insSoon, noIns };
+  }, []);
+ 
   const clearPoFilters = () => {
     setPoSearch(""); setPoVendorFilter("all"); setPoStatusFilter("all");
   };
@@ -1277,8 +1291,6 @@ function Dashboard({ onLogout }) {
     { id: "dashboard", label: "แดชบอร์ด", icon: LayoutDashboard },
     { id: "sites", label: "ไซต์งาน", icon: Building2 },
     { id: "po", label: "รายการ PO", icon: Receipt },
-    { id: "po-summary", label: "สรุปยอด PO", icon: TrendingUp },
-    { id: "report", label: "รายงานสรุป", icon: FileText },
     ...CUSTOM_SHEETS.filter((m) => !m.company || m.company === companyId).map((m) => ({
       id: `sheet-${m.id}`,
       label: m.label,
@@ -1418,8 +1430,6 @@ function Dashboard({ onLogout }) {
               {view === "dashboard" && company.name}
               {view === "sites" && "ไซต์งานทั้งหมด"}
               {view === "po" && "รายการใบสั่งซื้อ (PO)"}
-              {view === "po-summary" && "สรุปยอด PO"}
-              {view === "report" && "รายงานสรุปผลการดำเนินงาน"}
               {activeSheetModule && activeSheetModule.label}
             </h1>
             <p style={{ fontSize: 13, color: theme.textMuted, margin: "4px 0 0" }}>{company.tagline}</p>
@@ -1452,7 +1462,14 @@ function Dashboard({ onLogout }) {
           </div>
         )}
  
-        {view === "dashboard" && <DashboardView theme={theme} counts={counts} pieData={pieData} siteData={siteData} />}
+        {view === "dashboard" && (
+          <DashboardView
+            theme={theme} counts={counts} pieData={pieData} siteData={siteData}
+            poCounts={poCounts} poPieData={poPieData} poBucketData={poBucketData}
+            poSummaryPeriod={poSummaryPeriod} setPoSummaryPeriod={setPoSummaryPeriod}
+            totalSites={SAMPLE_SITES.length} insuranceSummary={insuranceSummary}
+          />
+        )}
  
         {view === "sites" && (
           <SitesView
@@ -1473,20 +1490,6 @@ function Dashboard({ onLogout }) {
           />
         )}
  
-        {view === "po-summary" && (
-          <POSummaryView
-            theme={theme} poCounts={poCounts} poPieData={poPieData} poBucketData={poBucketData}
-            period={poSummaryPeriod} setPeriod={setPoSummaryPeriod}
-          />
-        )}
- 
-        {view === "report" && (
-          <ReportView
-            theme={theme} company={company} counts={counts} siteData={siteData}
-            reportPeriod={reportPeriod} setReportPeriod={setReportPeriod}
-          />
-        )}
- 
         {activeSheetModule && (
           <GenericSheetView
             theme={theme} inputStyle={inputStyle} module={activeSheetModule}
@@ -1503,7 +1506,12 @@ function Dashboard({ onLogout }) {
 /* Dashboard view                                                      */
 /* ------------------------------------------------------------------ */
  
-function DashboardView({ theme, counts, pieData, siteData }) {
+function DashboardView({
+  theme, counts, pieData, siteData,
+  poCounts, poPieData, poBucketData, poSummaryPeriod, setPoSummaryPeriod,
+  totalSites, insuranceSummary,
+}) {
+  const outstandingPO = poCounts.pending + poCounts.approved + poCounts.ordered;
   return (
     <>
       <div className="kpi-row" style={{ display: "flex", gap: 16, marginBottom: 22, flexWrap: "wrap" }}>
@@ -1556,6 +1564,89 @@ function DashboardView({ theme, counts, pieData, siteData }) {
             </ResponsiveContainer>
           </div>
         </div>
+      </div>
+ 
+      {/* --- สรุปยอด PO (ย้ายมารวมในหน้าแดชบอร์ด) --- */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "26px 0 14px" }}>
+        <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, margin: 0 }}>สรุปยอด PO</h2>
+        <div className="no-print" style={{ display: "flex", background: theme.surfaceAlt, borderRadius: 10, padding: 3, gap: 3 }}>
+          {[["week", "รายสัปดาห์"], ["month", "รายเดือน"]].map(([k, l]) => (
+            <button
+              key={k}
+              onClick={() => setPoSummaryPeriod(k)}
+              style={{
+                border: "none", cursor: "pointer", borderRadius: 8, padding: "7px 14px", fontSize: 12.5, fontWeight: 600,
+                background: poSummaryPeriod === k ? theme.primary : "transparent",
+                color: poSummaryPeriod === k ? "#fff" : theme.textMuted,
+              }}
+            >
+              {l}
+            </button>
+          ))}
+        </div>
+      </div>
+ 
+      <div className="kpi-row" style={{ display: "flex", gap: 16, marginBottom: 22, flexWrap: "wrap" }}>
+        <KpiCard icon={Receipt} label="ยอด PO รวมทั้งหมด" value={formatBaht(poCounts.totalAmount)} sub={`${poCounts.total} รายการ`} theme={theme} tint={theme.primary} />
+        <KpiCard icon={Clock} label="รอดำเนินการ" value={outstandingPO} sub="รออนุมัติ / อนุมัติแล้ว / สั่งซื้อแล้ว" theme={theme} tint={theme.accent} />
+        <KpiCard icon={CheckCircle2} label="ชำระเงินแล้ว" value={poCounts.paid} sub="ปิด PO เรียบร้อย" theme={theme} tint="#22A559" />
+        <KpiCard icon={AlertTriangle} label="ยกเลิก" value={poCounts.cancelled} sub="PO ที่ถูกยกเลิก" theme={theme} tint="#E2482F" />
+      </div>
+ 
+      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 26 }}>
+        <div style={{ flex: "1 1 340px", background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, padding: 20, boxShadow: theme.shadow }}>
+          <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14.5, margin: "0 0 4px" }}>ยอดเงิน PO ตามสถานะ</h3>
+          <p style={{ fontSize: 12, color: theme.textMuted, margin: "0 0 8px" }}>PO Amount by Status</p>
+          <div style={{ height: 230 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={poPieData} dataKey="value" nameKey="name" innerRadius={54} outerRadius={82} paddingAngle={3} strokeWidth={0}>
+                  {poPieData.map((d) => <Cell key={d.key} fill={d.color} />)}
+                </Pie>
+                <Tooltip formatter={(v) => formatBaht(v)} contentStyle={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 10, fontSize: 12.5, color: theme.text }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 16px", marginTop: 4 }}>
+            {poPieData.map((d) => (
+              <div key={d.key} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: theme.textMuted }}>
+                <span style={{ width: 8, height: 8, borderRadius: 999, background: d.color }} />
+                {d.name}
+              </div>
+            ))}
+          </div>
+        </div>
+ 
+        <div style={{ flex: "1.3 1 380px", background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, padding: 20, boxShadow: theme.shadow }}>
+          <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14.5, margin: "0 0 4px" }}>
+            {poSummaryPeriod === "month" ? "ยอด PO แยกตามเดือน" : "ยอด PO แยกตามสัปดาห์"}
+          </h3>
+          <p style={{ fontSize: 12, color: theme.textMuted, margin: "0 0 8px" }}>{poSummaryPeriod === "month" ? "Monthly Totals" : "Weekly Totals"}</p>
+          <div style={{ height: 230 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={poBucketData} margin={{ left: 4, right: 16, top: 4, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke={theme.border} vertical={false} />
+                <XAxis dataKey="label" tick={{ fontSize: 10.5, fill: theme.textMuted }} axisLine={{ stroke: theme.border }} tickLine={false} interval={0} angle={-15} textAnchor="end" height={50} />
+                <YAxis tick={{ fontSize: 11, fill: theme.textMuted }} axisLine={{ stroke: theme.border }} tickLine={false} />
+                <Tooltip
+                  formatter={(v) => formatBaht(v)}
+                  contentStyle={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 10, fontSize: 12.5, color: theme.text }}
+                />
+                <Bar dataKey="amount" fill={theme.primary} radius={[6, 6, 0, 0]} barSize={26} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+ 
+      {/* --- สรุปจำนวนไซต์งาน และสรุปประกันรถ --- */}
+      <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, margin: "0 0 14px" }}>สรุปไซต์งาน &amp; ประกันรถ</h2>
+      <div className="kpi-row" style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+        <KpiCard icon={Building2} label="ไซต์งานทั้งหมด" value={totalSites} sub="ไซต์งานที่ดูแลอยู่" theme={theme} tint={theme.primary} />
+        <KpiCard icon={Car} label="รถทั้งหมด" value={insuranceSummary.total} sub="คันที่มีในระบบ" theme={theme} tint={theme.accent} />
+        <KpiCard icon={AlertTriangle} label="ภาษีใกล้หมดอายุ" value={insuranceSummary.taxSoon} sub="เหลือ ≤ 30 วัน (คัน)" theme={theme} tint="#E2482F" />
+        <KpiCard icon={AlertTriangle} label="พรบ. ใกล้หมดอายุ" value={insuranceSummary.actSoon} sub="เหลือ ≤ 30 วัน (คัน)" theme={theme} tint="#E2482F" />
+        <KpiCard icon={AlertTriangle} label="ประกันภัยใกล้หมดอายุ" value={insuranceSummary.insSoon} sub="เหลือ ≤ 30 วัน (คัน)" theme={theme} tint="#E2482F" />
       </div>
     </>
   );
@@ -1683,7 +1774,7 @@ function POListView({
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
           <thead>
             <tr style={{ background: theme.surfaceAlt }}>
-              {["เลขที่ PO", "ไซต์งาน", "ผู้ขาย / ร้านค้า", "รายการ", "จำนวนเงิน", "วันที่สั่งซื้อ", "สถานะ"].map((h) => (
+              {["เลขที่ PO", "ไซต์งาน", "ผู้ขาย / ร้านค้า", "รายการ", "จำนวน", "จำนวนเงิน", "วันที่สั่งซื้อ", "สถานะ"].map((h) => (
                 <th key={h} style={{ textAlign: "left", padding: "10px 14px", fontSize: 11.5, fontWeight: 600, color: theme.textMuted, whiteSpace: "nowrap" }}>{h}</th>
               ))}
             </tr>
@@ -1695,6 +1786,7 @@ function POListView({
                 <td style={{ padding: "11px 14px", maxWidth: 200 }}>{p.site}</td>
                 <td style={{ padding: "11px 14px", whiteSpace: "nowrap" }}>{p.vendor}</td>
                 <td style={{ padding: "11px 14px", maxWidth: 260, color: theme.text }}>{p.description}</td>
+                <td style={{ padding: "11px 14px", whiteSpace: "nowrap", textAlign: "right" }}>{p.qty !== undefined && p.qty !== null && p.qty !== "" ? p.qty : "-"}</td>
                 <td style={{ padding: "11px 14px", whiteSpace: "nowrap", fontWeight: 600 }}>{formatBaht(p.amount || 0)}</td>
                 <td style={{ padding: "11px 14px", whiteSpace: "nowrap", color: theme.textMuted, fontSize: 12.5 }}>{p.date}</td>
                 <td style={{ padding: "11px 14px" }}><StatusBadge status={p.status} theme={theme} meta={PO_STATUS_META} /></td>
@@ -1702,7 +1794,7 @@ function POListView({
             ))}
             {filteredPOs.length === 0 && (
               <tr>
-                <td colSpan={7} style={{ padding: "40px 14px", textAlign: "center", color: theme.textMuted, fontSize: 13 }}>
+                <td colSpan={8} style={{ padding: "40px 14px", textAlign: "center", color: theme.textMuted, fontSize: 13 }}>
                   ไม่พบ PO ที่ตรงกับตัวกรองที่เลือก ลองปรับเงื่อนไขการค้นหาใหม่
                 </td>
               </tr>
@@ -1711,117 +1803,6 @@ function POListView({
         </table>
       </div>
     </div>
-  );
-}
- 
-/* ------------------------------------------------------------------ */
-/* PO summary view (สรุปยอด PO รายสัปดาห์ / รายเดือน)                   */
-/* ------------------------------------------------------------------ */
- 
-function POSummaryView({ theme, poCounts, poPieData, poBucketData, period, setPeriod }) {
-  const outstanding = poCounts.pending + poCounts.approved + poCounts.ordered;
-  return (
-    <>
-      <div className="no-print" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-        <div style={{ display: "flex", background: theme.surfaceAlt, borderRadius: 10, padding: 3, gap: 3 }}>
-          {[["week", "รายสัปดาห์"], ["month", "รายเดือน"]].map(([k, l]) => (
-            <button
-              key={k}
-              onClick={() => setPeriod(k)}
-              style={{
-                border: "none", cursor: "pointer", borderRadius: 8, padding: "7px 14px", fontSize: 12.5, fontWeight: 600,
-                background: period === k ? theme.primary : "transparent",
-                color: period === k ? "#fff" : theme.textMuted,
-              }}
-            >
-              {l}
-            </button>
-          ))}
-        </div>
-      </div>
- 
-      <div className="kpi-row" style={{ display: "flex", gap: 16, marginBottom: 22, flexWrap: "wrap" }}>
-        <KpiCard icon={Receipt} label="ยอด PO รวมทั้งหมด" value={formatBaht(poCounts.totalAmount)} sub={`${poCounts.total} รายการ`} theme={theme} tint={theme.primary} />
-        <KpiCard icon={Clock} label="รอดำเนินการ" value={outstanding} sub="รออนุมัติ / อนุมัติแล้ว / สั่งซื้อแล้ว" theme={theme} tint={theme.accent} />
-        <KpiCard icon={CheckCircle2} label="ชำระเงินแล้ว" value={poCounts.paid} sub="ปิด PO เรียบร้อย" theme={theme} tint="#22A559" />
-        <KpiCard icon={AlertTriangle} label="ยกเลิก" value={poCounts.cancelled} sub="PO ที่ถูกยกเลิก" theme={theme} tint="#E2482F" />
-      </div>
- 
-      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 16 }}>
-        <div style={{ flex: "1 1 340px", background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, padding: 20, boxShadow: theme.shadow }}>
-          <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14.5, margin: "0 0 4px" }}>ยอดเงิน PO ตามสถานะ</h3>
-          <p style={{ fontSize: 12, color: theme.textMuted, margin: "0 0 8px" }}>PO Amount by Status</p>
-          <div style={{ height: 230 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={poPieData} dataKey="value" nameKey="name" innerRadius={54} outerRadius={82} paddingAngle={3} strokeWidth={0}>
-                  {poPieData.map((d) => <Cell key={d.key} fill={d.color} />)}
-                </Pie>
-                <Tooltip formatter={(v) => formatBaht(v)} contentStyle={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 10, fontSize: 12.5, color: theme.text }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 16px", marginTop: 4 }}>
-            {poPieData.map((d) => (
-              <div key={d.key} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: theme.textMuted }}>
-                <span style={{ width: 8, height: 8, borderRadius: 999, background: d.color }} />
-                {d.name}
-              </div>
-            ))}
-          </div>
-        </div>
- 
-        <div style={{ flex: "1.3 1 380px", background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, padding: 20, boxShadow: theme.shadow }}>
-          <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14.5, margin: "0 0 4px" }}>
-            {period === "month" ? "ยอด PO แยกตามเดือน" : "ยอด PO แยกตามสัปดาห์"}
-          </h3>
-          <p style={{ fontSize: 12, color: theme.textMuted, margin: "0 0 8px" }}>{period === "month" ? "Monthly Totals" : "Weekly Totals"}</p>
-          <div style={{ height: 230 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={poBucketData} margin={{ left: 4, right: 16, top: 4, bottom: 4 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke={theme.border} vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: 10.5, fill: theme.textMuted }} axisLine={{ stroke: theme.border }} tickLine={false} interval={0} angle={-15} textAnchor="end" height={50} />
-                <YAxis tick={{ fontSize: 11, fill: theme.textMuted }} axisLine={{ stroke: theme.border }} tickLine={false} />
-                <Tooltip
-                  formatter={(v) => formatBaht(v)}
-                  contentStyle={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 10, fontSize: 12.5, color: theme.text }}
-                />
-                <Bar dataKey="amount" fill={theme.primary} radius={[6, 6, 0, 0]} barSize={26} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
- 
-      <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, boxShadow: theme.shadow, overflow: "hidden" }}>
-        <div style={{ padding: "14px 20px", borderBottom: `1px solid ${theme.border}` }}>
-          <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14.5, margin: 0 }}>ตารางสรุปยอด PO</h3>
-        </div>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-          <thead>
-            <tr style={{ background: theme.surfaceAlt }}>
-              <th style={{ textAlign: "left", padding: "9px 16px", fontSize: 11.5, color: theme.textMuted, fontWeight: 600 }}>{period === "month" ? "เดือน" : "สัปดาห์"}</th>
-              <th style={{ textAlign: "right", padding: "9px 16px", fontSize: 11.5, color: theme.textMuted, fontWeight: 600 }}>จำนวน PO</th>
-              <th style={{ textAlign: "right", padding: "9px 16px", fontSize: 11.5, color: theme.textMuted, fontWeight: 600 }}>ยอดรวม</th>
-            </tr>
-          </thead>
-          <tbody>
-            {poBucketData.map((b) => (
-              <tr key={b.label} style={{ borderTop: `1px solid ${theme.border}` }}>
-                <td style={{ padding: "10px 16px" }}>{b.label}</td>
-                <td style={{ padding: "10px 16px", textAlign: "right" }}>{b.count}</td>
-                <td style={{ padding: "10px 16px", textAlign: "right", fontWeight: 600 }}>{formatBaht(b.amount)}</td>
-              </tr>
-            ))}
-            {poBucketData.length === 0 && (
-              <tr>
-                <td colSpan={3} style={{ padding: "30px 16px", textAlign: "center", color: theme.textMuted }}>ยังไม่มีข้อมูล PO ในช่วงเวลานี้</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </>
   );
 }
  
@@ -1917,110 +1898,6 @@ function GenericSheetView({ theme, inputStyle, module, state, onReload }) {
       {!loading && !error && columns.length === 0 && (
         <div style={{ padding: "40px 16px", textAlign: "center", color: theme.textMuted, fontSize: 13 }}>ยังไม่มีข้อมูลในชีตนี้</div>
       )}
-    </div>
-  );
-}
- 
-/* ------------------------------------------------------------------ */
-/* Report view                                                         */
-/* ------------------------------------------------------------------ */
- 
-function ReportView({ theme, company, counts, siteData, reportPeriod, setReportPeriod }) {
-  const periodLabel = reportPeriod === "week" ? "ประจำสัปดาห์ที่ 3 กรกฎาคม 2569" : "ประจำเดือนกรกฎาคม 2569";
-  const completionRate = counts.total ? Math.round((counts.completed / counts.total) * 100) : 0;
- 
-  return (
-    <div>
-      <div className="no-print" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-        <div style={{ display: "flex", background: theme.surfaceAlt, borderRadius: 10, padding: 3, gap: 3 }}>
-          {[["week", "รายสัปดาห์"], ["month", "รายเดือน"]].map(([k, l]) => (
-            <button
-              key={k}
-              onClick={() => setReportPeriod(k)}
-              style={{
-                border: "none", cursor: "pointer", borderRadius: 8, padding: "7px 14px", fontSize: 12.5, fontWeight: 600,
-                background: reportPeriod === k ? theme.primary : "transparent",
-                color: reportPeriod === k ? "#fff" : theme.textMuted,
-              }}
-            >
-              {l}
-            </button>
-          ))}
-        </div>
-        <button
-          onClick={() => window.print()}
-          style={{
-            display: "flex", alignItems: "center", gap: 7, marginLeft: "auto", border: "none", cursor: "pointer",
-            borderRadius: 10, padding: "9px 16px", fontSize: 13, fontWeight: 600, color: "#fff", background: theme.primary,
-          }}
-        >
-          <Printer size={14} /> พิมพ์ / ส่งออกรายงาน
-        </button>
-      </div>
- 
-      <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, padding: 28, boxShadow: theme.shadow }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: `1px solid ${theme.border}`, paddingBottom: 18, marginBottom: 20 }}>
-          <div>
-            <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 18 }}>{company.name}</div>
-            <div style={{ fontSize: 12.5, color: theme.textMuted, marginTop: 2 }}>รายงานสรุปผลการดำเนินงาน{periodLabel}</div>
-          </div>
-          <div
-            style={{
-              width: 40, height: 40, borderRadius: 10, background: theme.primary, color: "#fff",
-              display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700,
-            }}
-          >
-            {company.monogram}
-          </div>
-        </div>
- 
-        <div className="op-report-grid" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 14, marginBottom: 26 }}>
-          {[
-            ["งานทั้งหมด", counts.total],
-            ["รอดำเนินการ", counts.pending],
-            ["กำลังดำเนินการ", counts.inprogress],
-            ["เสร็จสิ้น", counts.completed],
-            ["เกินกำหนด", counts.overdue],
-          ].map(([label, val]) => (
-            <div key={label} style={{ textAlign: "center", padding: "14px 8px", borderRadius: 12, background: theme.surfaceAlt }}>
-              <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 22, fontWeight: 700 }}>{val}</div>
-              <div style={{ fontSize: 11.5, color: theme.textMuted, marginTop: 3 }}>{label}</div>
-            </div>
-          ))}
-        </div>
- 
-        <div style={{ marginBottom: 24 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, marginBottom: 6, color: theme.textMuted }}>
-            <span>อัตราความสำเร็จของงาน</span>
-            <span style={{ fontWeight: 700, color: theme.text }}>{completionRate}%</span>
-          </div>
-          <div style={{ height: 8, borderRadius: 999, background: theme.surfaceAlt, overflow: "hidden" }}>
-            <div style={{ height: "100%", width: `${completionRate}%`, background: theme.primary, borderRadius: 999 }} />
-          </div>
-        </div>
- 
-        <h4 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, margin: "0 0 10px" }}>สรุปงานแยกตามไซต์งาน</h4>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-          <thead>
-            <tr style={{ background: theme.surfaceAlt }}>
-              <th style={{ textAlign: "left", padding: "9px 12px", fontSize: 11.5, color: theme.textMuted, fontWeight: 600 }}>ไซต์งาน</th>
-              <th style={{ textAlign: "right", padding: "9px 12px", fontSize: 11.5, color: theme.textMuted, fontWeight: 600 }}>จำนวนงาน</th>
-            </tr>
-          </thead>
-          <tbody>
-            {siteData.map((s) => (
-              <tr key={s.fullSite} style={{ borderTop: `1px solid ${theme.border}` }}>
-                <td style={{ padding: "9px 12px" }}>{s.fullSite}</td>
-                <td style={{ padding: "9px 12px", textAlign: "right", fontWeight: 600 }}>{s.count}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
- 
-        <div style={{ marginTop: 22, fontSize: 11.5, color: theme.textMuted, textAlign: "right" }}>
-          ออกรายงานโดยระบบ ACHIEVED GROUP · 20 กรกฎาคม 2569
-        </div>
-      </div>
     </div>
   );
 }
