@@ -117,8 +117,20 @@ const RefreshCw = (p) => (
     <path d="M21 12a9 9 0 0 1-15 6.7L3 16" /><path d="M8 16H3v5" />
   </IconBase>
 );
+const Car = (p) => (
+  <IconBase {...p}>
+    <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9L2 10.5V16c0 .6.4 1 1 1h2" />
+    <circle cx="7" cy="17" r="2" /><path d="M9 17h6" /><circle cx="17" cy="17" r="2" />
+  </IconBase>
+);
+const Building2 = (p) => (
+  <IconBase {...p}>
+    <path d="M6 22V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v18Z" /><path d="M6 12H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2" />
+    <path d="M18 9h2a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-2" /><path d="M10 6h4" /><path d="M10 10h4" /><path d="M10 14h4" /><path d="M10 18h4" />
+  </IconBase>
+);
  
-const ICONS_BY_NAME = { FileSpreadsheet, Receipt, TrendingUp };
+const ICONS_BY_NAME = { FileSpreadsheet, Receipt, TrendingUp, Car, Building2 };
  
 /* ------------------------------------------------------------------ */
 /* Company / theme configuration                                       */
@@ -211,22 +223,694 @@ const PO_SHEET_CSV_URL = "";
 //   2) เลือกชีตที่ต้องการ → รูปแบบ CSV → กด Publish แล้วคัดลอกลิงก์
 //   3) นำลิงก์มาใส่ในช่อง sheetUrl ด้านล่าง (แถวแรกของชีตควรเป็นหัวคอลัมน์)
 // ระบบจะสร้างเมนูและตารางให้อัตโนมัติตามหัวคอลัมน์ในชีตนั้น ๆ
+//
+// หมายเหตุ: ถ้าใส่ data (array ของ object) แทน sheetUrl ระบบจะใช้ข้อมูลนั้นแสดงผลทันที
+// โดยไม่ต้องเชื่อมต่อ Google Sheet — เหมาะสำหรับข้อมูลที่นำเข้าจากไฟล์ Excel ที่แนบมา
+// ข้อมูลประกันรถ นำเข้าจากไฟล์ Excel ที่แนบ (รายการต่อประกันภัยรถยนต์-จักรยานยนต์ ปี 2569-2570)
+const SAMPLE_INSURANCE = [
+  {
+    "no": 1,
+    "plate": "ฒฐ7231",
+    "model": "Mitsubishi Triton",
+    "owner": "-",
+    "usedAt": "ราชวิท",
+    "taxExpiry": "4 ม.ค. 2570",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 167,
+    "actExpiry": "4 ม.ค. 2570",
+    "actAlertDate": "5 ธ.ค. 2569",
+    "actDaysLeft": 167,
+    "actStatus": "ปกติ",
+    "insClass": "ประกัน3",
+    "insExpiry": "11 ธ.ค. 2569",
+    "insAlertLeadDays": 30,
+    "insAlertDate": "11 พ.ย. 2569",
+    "insDaysLeft": 143,
+    "insStatus": "ปกติ",
+    "taxAlertDate": "5 ธ.ค. 2569",
+    "insCompany": "ไทยวิวัฒน์",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 2,
+    "plate": "ฒฌ7815",
+    "model": "Mitsubishi Triton",
+    "owner": "-",
+    "usedAt": "ออฟฟิศ",
+    "taxExpiry": "16 ส.ค. 2570",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 391,
+    "actExpiry": "16 ส.ค. 2569",
+    "actAlertDate": "17 ก.ค. 2569",
+    "actDaysLeft": 26,
+    "actStatus": "ควรแจ้งเตือนแล้ว",
+    "insClass": "ประกัน2+",
+    "insExpiry": "29 มี.ค. 2570",
+    "insAlertLeadDays": 30,
+    "insAlertDate": "27 ก.พ. 2570",
+    "insDaysLeft": 251,
+    "insStatus": "ปกติ",
+    "taxAlertDate": "17 ก.ค. 2570",
+    "insCompany": "ไทยวิวัฒน์",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 3,
+    "plate": "ฒท 7375",
+    "model": "Mitsubishi Triton",
+    "owner": "-",
+    "usedAt": "ท่าเรือ",
+    "taxExpiry": "1 มิ.ย. 2570",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 315,
+    "actExpiry": "5 มิ.ย. 2570",
+    "actAlertDate": "6 พ.ค. 2570",
+    "actDaysLeft": 319,
+    "actStatus": "ปกติ",
+    "insClass": "ประกัน2+",
+    "insExpiry": "8 ธ.ค. 2569",
+    "insAlertLeadDays": 30,
+    "insAlertDate": "8 พ.ย. 2569",
+    "insDaysLeft": 140,
+    "insStatus": "ปกติ",
+    "taxAlertDate": "2 พ.ค. 2570",
+    "insCompany": "ไทยวิวัฒน์",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 4,
+    "plate": "54-9216",
+    "model": "ISUZU",
+    "owner": "-",
+    "usedAt": "ม.พระจอมเกล้าธนบุรี",
+    "taxExpiry": "30 ก.ย. 2569",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 71,
+    "actExpiry": "13 พ.ย. 2569",
+    "actAlertDate": "14 ต.ค. 2569",
+    "actDaysLeft": 115,
+    "actStatus": "ปกติ",
+    "insClass": "ประกัน1",
+    "insExpiry": "13 พ.ย. 2569",
+    "insAlertLeadDays": 30,
+    "insAlertDate": "14 ต.ค. 2569",
+    "insDaysLeft": 115,
+    "insStatus": "ปกติ",
+    "taxAlertDate": "31 ส.ค. 2569",
+    "insCompany": "ไทยวิวัฒน์",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 5,
+    "plate": "ถท 5728",
+    "model": "TOYOTA VIGO",
+    "owner": "-",
+    "usedAt": "ออฟฟิศ",
+    "taxExpiry": "11 ก.พ. 2570",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 205,
+    "actExpiry": "23 เม.ย. 2570",
+    "actAlertDate": "24 มี.ค. 2570",
+    "actDaysLeft": 276,
+    "actStatus": "ปกติ",
+    "insClass": "ประกัน2+",
+    "insExpiry": "4 พ.ค. 2570",
+    "insAlertLeadDays": 30,
+    "insAlertDate": "4 เม.ย. 2570",
+    "insDaysLeft": 287,
+    "insStatus": "ปกติ",
+    "taxAlertDate": "12 ม.ค. 2570",
+    "insCompany": "ไทยวิวัฒน์",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 6,
+    "plate": "7กก3584",
+    "model": "TOYOTA REVO",
+    "owner": "(นายรุ่งโรจน์)พี่นิก",
+    "usedAt": "จัดส่ง",
+    "taxExpiry": "11 ม.ค. 2570",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 174,
+    "actExpiry": "11 ม.ค. 2570",
+    "actAlertDate": "12 ธ.ค. 2569",
+    "actDaysLeft": 174,
+    "actStatus": "ปกติ",
+    "insClass": "ประกัน2+",
+    "insExpiry": "29 เม.ย. 2570",
+    "insAlertLeadDays": 30,
+    "insAlertDate": "30 มี.ค. 2570",
+    "insDaysLeft": 282,
+    "insStatus": "ปกติ",
+    "taxAlertDate": "12 ธ.ค. 2569",
+    "insCompany": "ไทยวิวัฒน์",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 7,
+    "plate": "ลฮ1933",
+    "model": "Nissan NV",
+    "owner": "คุณเด่น",
+    "usedAt": "ออฟฟิศ",
+    "taxExpiry": "27 เม.ย. 2570",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 280,
+    "actExpiry": "6 พ.ค. 2570",
+    "actAlertDate": "6 เม.ย. 2570",
+    "actDaysLeft": 289,
+    "actStatus": "ปกติ",
+    "insClass": "ประกัน3",
+    "insExpiry": "29 เม.ย. 2570",
+    "insAlertLeadDays": 30,
+    "insAlertDate": "30 มี.ค. 2570",
+    "insDaysLeft": 282,
+    "insStatus": "ปกติ",
+    "taxAlertDate": "28 มี.ค. 2570",
+    "insCompany": "ไทยวิวัฒน์",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 8,
+    "plate": "1ฒช 7295",
+    "model": "Mitsubishi Triton",
+    "owner": "(นายวิโรจน์)พี่เม่น",
+    "usedAt": "จัดส่ง",
+    "taxExpiry": "16 มิ.ย. 2570",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 330,
+    "actExpiry": "16 มิ.ย. 2570",
+    "actAlertDate": "17 พ.ค. 2570",
+    "actDaysLeft": 330,
+    "actStatus": "ปกติ",
+    "insClass": "ประกัน2+",
+    "insExpiry": "27 ก.ย. 2569",
+    "insAlertLeadDays": 30,
+    "insAlertDate": "28 ส.ค. 2569",
+    "insDaysLeft": 68,
+    "insStatus": "ปกติ",
+    "taxAlertDate": "17 พ.ค. 2570",
+    "insCompany": "ไทยวิวัฒน์",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 9,
+    "plate": "3ฒม1415",
+    "model": "ISUZU",
+    "owner": "(นายพงพิชญ์)น้าอ้วน",
+    "usedAt": "จัดส่ง",
+    "taxExpiry": "7 ธ.ค. 2569",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 139,
+    "actExpiry": "27 ต.ค. 2569",
+    "actAlertDate": "27 ก.ย. 2569",
+    "actDaysLeft": 98,
+    "actStatus": "ปกติ",
+    "insClass": "ประกัน2+",
+    "insExpiry": "27 ต.ค. 2569",
+    "insAlertLeadDays": 30,
+    "insAlertDate": "27 ก.ย. 2569",
+    "insDaysLeft": 98,
+    "insStatus": "ปกติ",
+    "taxAlertDate": "7 พ.ย. 2569",
+    "insCompany": "ไทยวิวัฒน์",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 10,
+    "plate": "3ฒฬ3787",
+    "model": "ISUZU",
+    "owner": "(นายอลงกรณ์)พี่อ็อด",
+    "usedAt": "จัดส่ง",
+    "taxExpiry": "5 ก.พ. 2570",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 199,
+    "actExpiry": "5 ก.พ. 2570",
+    "actAlertDate": "6 ม.ค. 2570",
+    "actDaysLeft": 199,
+    "actStatus": "ปกติ",
+    "insClass": "ประกัน2+",
+    "insExpiry": "19 ธ.ค. 2569",
+    "insAlertLeadDays": 30,
+    "insAlertDate": "19 พ.ย. 2569",
+    "insDaysLeft": 151,
+    "insStatus": "ปกติ",
+    "taxAlertDate": "6 ม.ค. 2570",
+    "insCompany": "ไทยวิวัฒน์",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 11,
+    "plate": "ตย1006",
+    "model": "TOYOTA",
+    "owner": "-",
+    "usedAt": "ท่าเรือ",
+    "taxExpiry": "19 ธ.ค. 2569",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 151,
+    "actExpiry": "20 ธ.ค. 2569",
+    "actAlertDate": "20 พ.ย. 2569",
+    "actDaysLeft": 152,
+    "actStatus": "ปกติ",
+    "insClass": "ประกัน2+",
+    "insExpiry": "5 ต.ค. 2569",
+    "insAlertLeadDays": 30,
+    "insAlertDate": "5 ก.ย. 2569",
+    "insDaysLeft": 76,
+    "insStatus": "ปกติ",
+    "taxAlertDate": "19 พ.ย. 2569",
+    "insCompany": "ไทยวิวัฒน์",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 12,
+    "plate": "4กค4280",
+    "model": "MITSUBISHI PAJERO",
+    "owner": "(นายปราชญา) พี่ต้น",
+    "usedAt": "ออฟฟิศ",
+    "taxExpiry": "2 มี.ค. 2570",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 224,
+    "actExpiry": "6 ธ.ค. 2569",
+    "actAlertDate": "6 ธ.ค. 2569",
+    "actDaysLeft": 138,
+    "actStatus": "ปกติ",
+    "insClass": "ประกัน1",
+    "insExpiry": "9 ธ.ค. 2569",
+    "insAlertLeadDays": 30,
+    "insAlertDate": "9 พ.ย. 2569",
+    "insDaysLeft": 141,
+    "insStatus": "ปกติ",
+    "taxAlertDate": "2 มี.ค. 2570",
+    "insCompany": "ไทยวิวัฒน์",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 13,
+    "plate": "3ขค 7408",
+    "model": "GPX ROCK Sport",
+    "owner": "-",
+    "usedAt": "ม.พระจอมเกล้าธนบุรี",
+    "taxExpiry": "16 ก.พ. 2570",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 210,
+    "actExpiry": "7 มิ.ย. 2570",
+    "actAlertDate": "7 มิ.ย. 2570",
+    "actDaysLeft": 321,
+    "actStatus": "ปกติ",
+    "insClass": "-",
+    "insExpiry": "",
+    "insAlertLeadDays": "",
+    "insAlertDate": "",
+    "insDaysLeft": "",
+    "insStatus": "",
+    "taxAlertDate": "16 ก.พ. 2570",
+    "insCompany": "-",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 14,
+    "plate": "5ขต7544",
+    "model": "GPX ROCK Classic",
+    "owner": "-",
+    "usedAt": "ม.พระจอมเกล้าธนบุรี",
+    "taxExpiry": "14 ม.ค. 2570",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 177,
+    "actExpiry": "14 ม.ค. 2570",
+    "actAlertDate": "14 ม.ค. 2570",
+    "actDaysLeft": 177,
+    "actStatus": "ปกติ",
+    "insClass": "-",
+    "insExpiry": "",
+    "insAlertLeadDays": "",
+    "insAlertDate": "",
+    "insDaysLeft": "",
+    "insStatus": "",
+    "taxAlertDate": "14 ม.ค. 2570",
+    "insCompany": "-",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 15,
+    "plate": "5ขต7522",
+    "model": "GPX Sport",
+    "owner": "-",
+    "usedAt": "ม.พระจอมเกล้าธนบุรี",
+    "taxExpiry": "16 ก.ย. 2569",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 57,
+    "actExpiry": "18 ก.ย. 2569",
+    "actAlertDate": "18 ก.ย. 2569",
+    "actDaysLeft": 59,
+    "actStatus": "ปกติ",
+    "insClass": "-",
+    "insExpiry": "",
+    "insAlertLeadDays": "",
+    "insAlertDate": "",
+    "insDaysLeft": "",
+    "insStatus": "",
+    "taxAlertDate": "16 ก.ย. 2569",
+    "insCompany": "-",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 16,
+    "plate": "7ขน2929",
+    "model": "GPX ROCK classic",
+    "owner": "-",
+    "usedAt": "ม.พระจอมเกล้าธนบุรี",
+    "taxExpiry": "23 ส.ค. 2569",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 33,
+    "actExpiry": "8 ต.ค. 2569",
+    "actAlertDate": "8 ต.ค. 2569",
+    "actDaysLeft": 79,
+    "actStatus": "ปกติ",
+    "insClass": "-",
+    "insExpiry": "",
+    "insAlertLeadDays": "",
+    "insAlertDate": "",
+    "insDaysLeft": "",
+    "insStatus": "",
+    "taxAlertDate": "23 ส.ค. 2569",
+    "insCompany": "-",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 17,
+    "plate": "7ขณ2929",
+    "model": "GPXROCK Elegance",
+    "owner": "-",
+    "usedAt": "ม.พระจอมเกล้าธนบุรี",
+    "taxExpiry": "14 ม.ค. 2570",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 177,
+    "actExpiry": "14 ม.ค. 2570",
+    "actAlertDate": "14 ม.ค. 2570",
+    "actDaysLeft": 177,
+    "actStatus": "ปกติ",
+    "insClass": "-",
+    "insExpiry": "",
+    "insAlertLeadDays": "",
+    "insAlertDate": "",
+    "insDaysLeft": "",
+    "insStatus": "",
+    "taxAlertDate": "14 ม.ค. 2570",
+    "insCompany": "-",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 18,
+    "plate": "4ขล 3421",
+    "model": "GPX ROCK Elegance",
+    "owner": "-",
+    "usedAt": "ม.พระจอมเกล้าธนบุรี",
+    "taxExpiry": "6 พ.ค. 2570",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 289,
+    "actExpiry": "22 พ.ค. 2570",
+    "actAlertDate": "22 พ.ค. 2570",
+    "actDaysLeft": 305,
+    "actStatus": "ปกติ",
+    "insClass": "-",
+    "insExpiry": "",
+    "insAlertLeadDays": "",
+    "insAlertDate": "",
+    "insDaysLeft": "",
+    "insStatus": "",
+    "taxAlertDate": "6 พ.ค. 2570",
+    "insCompany": "-",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 19,
+    "plate": "7กก 1951",
+    "model": "SUZUKI GD110",
+    "owner": "-",
+    "usedAt": "กสทช.",
+    "taxExpiry": "3 ส.ค. 2569",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 13,
+    "actExpiry": "8 พ.ย. 2569",
+    "actAlertDate": "8 พ.ย. 2569",
+    "actDaysLeft": 110,
+    "actStatus": "ปกติ",
+    "insClass": "-",
+    "insExpiry": "",
+    "insAlertLeadDays": "",
+    "insAlertDate": "",
+    "insDaysLeft": "",
+    "insStatus": "",
+    "taxAlertDate": "3 ส.ค. 2569",
+    "insCompany": "-",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 20,
+    "plate": "9กน 8637",
+    "model": "Wave 110 I",
+    "owner": "-",
+    "usedAt": "แหลมฉบัง",
+    "taxExpiry": "14 ก.ย. 2569",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 55,
+    "actExpiry": "11 มิ.ย. 2570",
+    "actAlertDate": "11 มิ.ย. 2570",
+    "actDaysLeft": 325,
+    "actStatus": "ปกติ",
+    "insClass": "-",
+    "insExpiry": "",
+    "insAlertLeadDays": "",
+    "insAlertDate": "",
+    "insDaysLeft": "",
+    "insStatus": "",
+    "taxAlertDate": "14 ก.ย. 2569",
+    "insCompany": "-",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 21,
+    "plate": "2กศ 9375",
+    "model": "ZOOMER-X",
+    "owner": "-",
+    "usedAt": "สวทช.",
+    "taxExpiry": "15 ต.ค. 2569",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 86,
+    "actExpiry": "15 ต.ค. 2569",
+    "actAlertDate": "15 ต.ค. 2569",
+    "actDaysLeft": 86,
+    "actStatus": "ปกติ",
+    "insClass": "-",
+    "insExpiry": "",
+    "insAlertLeadDays": "",
+    "insAlertDate": "",
+    "insDaysLeft": "",
+    "insStatus": "",
+    "taxAlertDate": "15 ต.ค. 2569",
+    "insCompany": "-",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  },
+  {
+    "no": 22,
+    "plate": "3กข 8444",
+    "model": "ZOOMER-X",
+    "owner": "-",
+    "usedAt": "สวทช.",
+    "taxExpiry": "27 ต.ค. 2569",
+    "taxStatus": "ปกติ",
+    "taxDaysLeft": 98,
+    "actExpiry": "9 ต.ค. 2569",
+    "actAlertDate": "",
+    "actDaysLeft": 80,
+    "actStatus": "ปกติ",
+    "insClass": "-",
+    "insExpiry": "",
+    "insAlertLeadDays": "",
+    "insAlertDate": "",
+    "insDaysLeft": "",
+    "insStatus": "",
+    "taxAlertDate": "",
+    "insCompany": "-",
+    "policyNo": "",
+    "premium": "",
+    "note": ""
+  }
+];
+
+// ข้อมูลไซต์งาน นำเข้าจากไฟล์ Excel ที่แนบ (Mastersite.xlsx)
+const SAMPLE_SITES = [
+  {
+    "id": "SPK-BAMBAT",
+    "company": "รพ.สมเด็จพระปิ่นเกล้า อาคารบำบัด",
+    "type": "โรงพยาบาลรัฐ",
+    "address": "504 ถนน สมเด็จพระเจ้าตากสิน แขวงบุคคโล เขตธนบุรี กรุงเทพมหานคร 10600",
+    "coordinator": "พล",
+    "phone": "080-463-2027",
+    "contractStart": "1 ต.ค. 2568",
+    "contractEnd": "30 ก.ย. 2569",
+    "daysLeft": 71,
+    "status": "ดำเนินการ"
+  },
+  {
+    "id": "SPK-14",
+    "company": "รพ.สมเด็จพระปิ่นเกล้า อาคาร 14 ชั้น",
+    "type": "โรงพยาบาลรัฐ",
+    "address": "504 ถนน สมเด็จพระเจ้าตากสิน แขวงบุคคโล เขตธนบุรี กรุงเทพมหานคร 10600",
+    "coordinator": "เบิร์ด",
+    "phone": "084-774-4545",
+    "contractStart": "1 ต.ค. 2568",
+    "contractEnd": "30 ก.ย. 2569",
+    "daysLeft": 71,
+    "status": "ดำเนินการ"
+  },
+  {
+    "id": "SPK-80",
+    "company": "รพ.สมเด็จพระปิ่นเกล้า อาคาร 80 ปี",
+    "type": "โรงพยาบาลรัฐ",
+    "address": "504 ถนน สมเด็จพระเจ้าตากสิน แขวงบุคคโล เขตธนบุรี กรุงเทพมหานคร 10600",
+    "coordinator": "เต๋า",
+    "phone": "065-955-5264",
+    "contractStart": "1 ต.ค. 2568",
+    "contractEnd": "30 ก.ย. 2569",
+    "daysLeft": 71,
+    "status": "ดำเนินการ"
+  },
+  {
+    "id": "NBTC",
+    "company": "สำนักงาน กสทช.",
+    "type": "หน่วยงานรัฐ",
+    "address": "87 ถนนพหลโยธิน ซอย 8 แขวงสามเสนใน เขตพญาไท กรุงเทพฯ 10400",
+    "coordinator": "ศรายุทธ",
+    "phone": "090-994-2005",
+    "contractStart": "1 ม.ค. 2569",
+    "contractEnd": "31 ธ.ค. 2569",
+    "daysLeft": 163,
+    "status": "ดำเนินการ"
+  },
+  {
+    "id": "MU-SCI",
+    "company": "มหิดล คณะวิทยาศาสตร์ พญาไท",
+    "type": "มหาวิทยาลัย",
+    "address": "272 ถนน พระรามที่ 6 แขวงทุ่งพญาไท เขตราชเทวี กรุงเทพมหานคร 10400",
+    "coordinator": "แดง",
+    "phone": "094-428-2945",
+    "contractStart": "",
+    "contractEnd": "",
+    "daysLeft": "",
+    "status": "ดำเนินการ"
+  },
+  {
+    "id": "RID-MC",
+    "company": "ศูนย์การแพทย์ปัญญานันทภิกขุ ชลประทาน",
+    "type": "โรงพยาบาล",
+    "address": "222 หมู่ที่ 1 ถนน ติวานนท์ ตำบลบางตลาด อำเภอปากเกร็ด นนทบุรี 11120",
+    "coordinator": "ส้ม",
+    "phone": "083-443-1442",
+    "contractStart": "1 ต.ค. 2567",
+    "contractEnd": "30 ก.ย. 2569",
+    "daysLeft": 71,
+    "status": "ดำเนินการ"
+  },
+  {
+    "id": "EGAT-HQ",
+    "company": "การไฟฟ้าฝ่ายผลิตแห่งประเทศไทย(สำนักงานใหญ่)",
+    "type": "รัฐวิสาหกิจ",
+    "address": "53 หมู่ 2 ถนนจรัญสนิทวงศ์ ตำบลบางกรวย อำเภอบางกรวย จังหวัดนนทบุรี 11130",
+    "coordinator": "เกด",
+    "phone": "095-789-3991 ",
+    "contractStart": "",
+    "contractEnd": "",
+    "daysLeft": "",
+    "status": "ดำเนินการ"
+  },
+  {
+    "id": "OAP-HQ",
+    "company": "สำนักงานปรมาณูเพื่อสันติ",
+    "type": "หน่วยงานรัฐ",
+    "address": "16 ถนน วิภาวดีรังสิต แขวงลาดยาว เขตจตุจักร กรุงเทพมหานคร 10900",
+    "coordinator": "ต้อม",
+    "phone": "081-854-7955",
+    "contractStart": "23 ม.ค. 2569",
+    "contractEnd": "8 พ.ย. 2569",
+    "daysLeft": 110,
+    "status": "ดำเนินการ"
+  }
+];
+
 const CUSTOM_SHEETS = [
   {
     id: "insurance",            // ใช้อ้างอิงภายในเท่านั้น ห้ามซ้ำกัน
     label: "ประกันรถ",           // ชื่อเมนูที่แสดงในแถบด้านซ้าย
-    icon: "FileSpreadsheet",
+    icon: "Car",
     company: null,               // ใส่ "achieved" หรือ "engpower" ถ้าต้องการให้เห็นเฉพาะบริษัทนั้น, null = เห็นทั้งสองบริษัท
-    sheetUrl: "",                 // วาง URL CSV จาก Google Sheet ที่นี่
+    sheetUrl: "",                 // วาง URL CSV จาก Google Sheet ที่นี่ (ถ้าใช้ data ด้านล่างแทน ไม่ต้องใส่)
+    columns: [
+      { key: "no", label: "ลำดับ" },
+      { key: "plate", label: "ทะเบียนรถ" },
+      { key: "model", label: "ยี่ห้อ/รุ่นรถ" },
+      { key: "owner", label: "เจ้าของ/ผู้ขับขี่" },
+      { key: "usedAt", label: "สถานที่ใช้" },
+      { key: "taxExpiry", label: "วันหมดอายุภาษี" },
+      { key: "taxStatus", label: "สถานะ (ภาษี)" },
+      { key: "taxDaysLeft", label: "วันคงเหลือ (ภาษี)" },
+      { key: "actExpiry", label: "วันหมดอายุ พรบ." },
+      { key: "actDaysLeft", label: "วันคงเหลือ (พรบ.)" },
+      { key: "actStatus", label: "สถานะ (พรบ.)" },
+      { key: "insClass", label: "ประเภทประกัน (ชั้น)" },
+      { key: "insExpiry", label: "วันหมดอายุ (ประกันภัย)" },
+      { key: "insDaysLeft", label: "วันคงเหลือ (ประกันภัย)" },
+      { key: "insStatus", label: "สถานะ (ประกันภัย)" },
+      { key: "insCompany", label: "บริษัทประกัน" },
+      { key: "policyNo", label: "เลขที่กรมธรรม์" },
+      { key: "premium", label: "เบี้ยประกัน (บาท)" },
+      { key: "note", label: "หมายเหตุ" },
+    ],
+    data: SAMPLE_INSURANCE,
   },
-  {
-    id: "sitemaster",
-    label: "Site Master",
-    icon: "FileSpreadsheet",
-    company: null,
-    sheetUrl: "",
-  },
-  // เพิ่มรายการใหม่ได้โดยคัดลอกรูปแบบ { id, label, icon, company, sheetUrl } มาต่อท้าย
+  // เพิ่มรายการใหม่ได้โดยคัดลอกรูปแบบ { id, label, icon, company, sheetUrl, columns, data } มาต่อท้าย
 ];
  
 /* ------------------------------------------------------------------ */
@@ -380,6 +1064,8 @@ function Dashboard({ onLogout }) {
   const [poStatusFilter, setPoStatusFilter] = useState("all");
   const [poSummaryPeriod, setPoSummaryPeriod] = useState("month");
  
+  const [siteSearch, setSiteSearch] = useState("");
+ 
   const [customSheetState, setCustomSheetState] = useState({});
  
   const company = COMPANIES[companyId];
@@ -456,15 +1142,29 @@ function Dashboard({ onLogout }) {
       .finally(() => setLoadingPos(false));
   }, []);
  
-  // โหลดข้อมูลของเมนู Google Sheet แบบกำหนดเอง (ประกันรถ, Site Master ฯลฯ) แบบ lazy ตอนเปิดเมนูนั้นครั้งแรก
+  // โหลดข้อมูลของเมนู Google Sheet แบบกำหนดเอง (ประกันรถ ฯลฯ) แบบ lazy ตอนเปิดเมนูนั้นครั้งแรก
+  // ถ้าโมดูลมี data ฝังอยู่แล้ว (นำเข้าจากไฟล์ Excel) จะใช้ข้อมูลนั้นทันทีโดยไม่ fetch
   useEffect(() => {
     if (!view.startsWith("sheet-")) return;
     const sheetId = view.replace("sheet-", "");
     const module = CUSTOM_SHEETS.find((m) => m.id === sheetId);
-    if (!module || !module.sheetUrl) return;
+    if (!module) return;
     const existing = customSheetState[sheetId];
     if (existing && (existing.loading || existing.loaded)) return;
  
+    if (module.data && module.data.length) {
+      const columns = module.columns ? module.columns.map((c) => c.label) : Object.keys(module.data[0]);
+      const columnKeys = module.columns ? module.columns.map((c) => c.key) : Object.keys(module.data[0]);
+      const rows = module.data.map((row) => {
+        const mapped = {};
+        columns.forEach((label, i) => { mapped[label] = row[columnKeys[i]]; });
+        return mapped;
+      });
+      setCustomSheetState((prev) => ({ ...prev, [sheetId]: { rows, columns, loading: false, loaded: true, error: "" } }));
+      return;
+    }
+ 
+    if (!module.sheetUrl) return;
     setCustomSheetState((prev) => ({ ...prev, [sheetId]: { rows: [], columns: [], loading: true, loaded: false, error: "" } }));
     fetch(module.sheetUrl)
       .then((res) => {
@@ -498,20 +1198,6 @@ function Dashboard({ onLogout }) {
   const companyTasks = useMemo(() => tasksData.filter((t) => t.company === companyId), [tasksData, companyId]);
   const sites = useMemo(() => Array.from(new Set(companyTasks.map((t) => t.site))), [companyTasks]);
   const assignees = useMemo(() => Array.from(new Set(companyTasks.map((t) => t.assignee))), [companyTasks]);
- 
-  const filteredTasks = useMemo(() => {
-    return companyTasks.filter((t) => {
-      if (siteFilter !== "all" && t.site !== siteFilter) return false;
-      if (assigneeFilter !== "all" && t.assignee !== assigneeFilter) return false;
-      if (statusFilter !== "all" && t.status !== statusFilter) return false;
-      if (search.trim()) {
-        const q = search.trim().toLowerCase();
-        const hay = `${t.id} ${t.site} ${t.title} ${t.assignee} ${t.type}`.toLowerCase();
-        if (!hay.includes(q)) return false;
-      }
-      return true;
-    });
-  }, [companyTasks, siteFilter, assigneeFilter, statusFilter, search]);
  
   const counts = useMemo(() => {
     const c = { total: companyTasks.length, pending: 0, inprogress: 0, completed: 0, overdue: 0 };
@@ -573,16 +1259,23 @@ function Dashboard({ onLogout }) {
     return Object.values(buckets).sort((a, b) => (a.sortMonth > b.sortMonth ? 1 : a.sortMonth < b.sortMonth ? -1 : a.sortDay - b.sortDay));
   }, [companyPOs, poSummaryPeriod]);
  
-  const clearFilters = () => {
-    setSearch(""); setSiteFilter("all"); setAssigneeFilter("all"); setStatusFilter("all");
-  };
+  // --- Site (Master Site) derived data ---
+  const filteredSites = useMemo(() => {
+    if (!siteSearch.trim()) return SAMPLE_SITES;
+    const q = siteSearch.trim().toLowerCase();
+    return SAMPLE_SITES.filter((s) => {
+      const hay = `${s.id} ${s.company} ${s.type} ${s.address} ${s.coordinator} ${s.phone}`.toLowerCase();
+      return hay.includes(q);
+    });
+  }, [siteSearch]);
+ 
   const clearPoFilters = () => {
     setPoSearch(""); setPoVendorFilter("all"); setPoStatusFilter("all");
   };
  
   const NAV_ITEMS = [
     { id: "dashboard", label: "แดชบอร์ด", icon: LayoutDashboard },
-    { id: "tasks", label: "รายการงาน", icon: ListChecks },
+    { id: "sites", label: "ไซต์งาน", icon: Building2 },
     { id: "po", label: "รายการ PO", icon: Receipt },
     { id: "po-summary", label: "สรุปยอด PO", icon: TrendingUp },
     { id: "report", label: "รายงานสรุป", icon: FileText },
@@ -723,7 +1416,7 @@ function Dashboard({ onLogout }) {
             </div>
             <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 22, fontWeight: 700, margin: 0 }}>
               {view === "dashboard" && company.name}
-              {view === "tasks" && company.name}
+              {view === "sites" && "ไซต์งานทั้งหมด"}
               {view === "po" && "รายการใบสั่งซื้อ (PO)"}
               {view === "po-summary" && "สรุปยอด PO"}
               {view === "report" && "รายงานสรุปผลการดำเนินงาน"}
@@ -761,14 +1454,11 @@ function Dashboard({ onLogout }) {
  
         {view === "dashboard" && <DashboardView theme={theme} counts={counts} pieData={pieData} siteData={siteData} />}
  
-        {view === "tasks" && (
-          <TasksView
-            theme={theme} inputStyle={inputStyle} sites={sites} assignees={assignees}
-            search={search} setSearch={setSearch}
-            siteFilter={siteFilter} setSiteFilter={setSiteFilter}
-            assigneeFilter={assigneeFilter} setAssigneeFilter={setAssigneeFilter}
-            statusFilter={statusFilter} setStatusFilter={setStatusFilter}
-            clearFilters={clearFilters} filteredTasks={filteredTasks}
+        {view === "sites" && (
+          <SitesView
+            theme={theme} inputStyle={inputStyle}
+            search={siteSearch} setSearch={setSiteSearch}
+            filteredSites={filteredSites}
           />
         )}
  
@@ -872,15 +1562,10 @@ function DashboardView({ theme, counts, pieData, siteData }) {
 }
  
 /* ------------------------------------------------------------------ */
-/* Task list view                                                      */
+/* Sites view (ไซต์งาน — จากไฟล์ Master Site)                          */
 /* ------------------------------------------------------------------ */
  
-function TasksView({
-  theme, inputStyle, sites, assignees,
-  search, setSearch, siteFilter, setSiteFilter,
-  assigneeFilter, setAssigneeFilter, statusFilter, setStatusFilter,
-  clearFilters, filteredTasks,
-}) {
+function SitesView({ theme, inputStyle, search, setSearch, filteredSites }) {
   return (
     <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, boxShadow: theme.shadow, overflow: "hidden" }}>
       <div style={{ padding: 16, display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", borderBottom: `1px solid ${theme.border}` }}>
@@ -889,53 +1574,52 @@ function TasksView({
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="ค้นหางาน, ไซต์งาน, ผู้รับผิดชอบ..."
+            placeholder="ค้นหาไซต์งาน, ผู้ประสานงาน, ที่อยู่..."
             style={{ ...inputStyle, width: "100%", paddingLeft: 30 }}
           />
         </div>
-        <select className="op-sel" value={siteFilter} onChange={(e) => setSiteFilter(e.target.value)} style={{ ...inputStyle, minWidth: 150 }}>
-          <option value="all">ทุกไซต์งาน</option>
-          {sites.map((s) => <option key={s} value={s}>{s}</option>)}
-        </select>
-        <select className="op-sel" value={assigneeFilter} onChange={(e) => setAssigneeFilter(e.target.value)} style={{ ...inputStyle, minWidth: 140 }}>
-          <option value="all">ทุกผู้รับผิดชอบ</option>
-          {assignees.map((a) => <option key={a} value={a}>{a}</option>)}
-        </select>
-        <select className="op-sel" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ ...inputStyle, minWidth: 140 }}>
-          <option value="all">ทุกสถานะ</option>
-          {Object.entries(STATUS_META).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
-        </select>
-        <button onClick={clearFilters} style={{ ...inputStyle, display: "flex", alignItems: "center", gap: 5, cursor: "pointer", color: theme.textMuted }}>
-          <X size={13} /> ล้างตัวกรอง
-        </button>
-        <div style={{ fontSize: 12, color: theme.textMuted, marginLeft: "auto" }}>พบ {filteredTasks.length} งาน</div>
+        <div style={{ fontSize: 12, color: theme.textMuted, marginLeft: "auto" }}>พบ {filteredSites.length} ไซต์งาน</div>
       </div>
  
       <div className="op-scroll" style={{ overflowX: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
           <thead>
             <tr style={{ background: theme.surfaceAlt }}>
-              {["ID", "ไซต์งาน / ผู้ว่าจ้าง", "หัวข้อการทำงาน", "ประเภทงาน", "ผู้รับผิดชอบ", "เริ่ม - สิ้นสุด", "สถานะ"].map((h) => (
+              {["ID", "ชื่อไซต์งาน / ลูกค้า", "ประเภท", "ที่อยู่", "ผู้ประสานงาน", "เบอร์ติดต่อ", "เริ่มสัญญา", "หมดสัญญา", "คงเหลือ (วัน)", "สถานะ"].map((h) => (
                 <th key={h} style={{ textAlign: "left", padding: "10px 14px", fontSize: 11.5, fontWeight: 600, color: theme.textMuted, whiteSpace: "nowrap" }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {filteredTasks.map((t) => (
-              <tr key={t.id} className="op-row" style={{ borderTop: `1px solid ${theme.border}`, transition: "background 0.1s ease" }}>
-                <td style={{ padding: "11px 14px", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: theme.primary, whiteSpace: "nowrap" }}>{t.id}</td>
-                <td style={{ padding: "11px 14px", maxWidth: 200 }}>{t.site}</td>
-                <td style={{ padding: "11px 14px", maxWidth: 260, color: theme.text }}>{t.title}</td>
-                <td style={{ padding: "11px 14px", whiteSpace: "nowrap", color: theme.textMuted }}>{t.type}</td>
-                <td style={{ padding: "11px 14px", whiteSpace: "nowrap" }}>{t.assignee}</td>
-                <td style={{ padding: "11px 14px", whiteSpace: "nowrap", color: theme.textMuted, fontSize: 12.5 }}>{t.start} – {t.end}</td>
-                <td style={{ padding: "11px 14px" }}><StatusBadge status={t.status} theme={theme} /></td>
+            {filteredSites.map((s) => (
+              <tr key={s.id} className="op-row" style={{ borderTop: `1px solid ${theme.border}`, transition: "background 0.1s ease" }}>
+                <td style={{ padding: "11px 14px", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: theme.primary, whiteSpace: "nowrap" }}>{s.id}</td>
+                <td style={{ padding: "11px 14px", maxWidth: 260, color: theme.text }}>{s.company}</td>
+                <td style={{ padding: "11px 14px", whiteSpace: "nowrap", color: theme.textMuted }}>{s.type}</td>
+                <td style={{ padding: "11px 14px", maxWidth: 280, color: theme.textMuted, fontSize: 12.5 }}>{s.address}</td>
+                <td style={{ padding: "11px 14px", whiteSpace: "nowrap" }}>{s.coordinator}</td>
+                <td style={{ padding: "11px 14px", whiteSpace: "nowrap" }}>{s.phone}</td>
+                <td style={{ padding: "11px 14px", whiteSpace: "nowrap", color: theme.textMuted, fontSize: 12.5 }}>{s.contractStart || "—"}</td>
+                <td style={{ padding: "11px 14px", whiteSpace: "nowrap", color: theme.textMuted, fontSize: 12.5 }}>{s.contractEnd || "—"}</td>
+                <td style={{ padding: "11px 14px", whiteSpace: "nowrap" }}>{s.daysLeft !== "" ? s.daysLeft : "—"}</td>
+                <td style={{ padding: "11px 14px" }}>
+                  <span
+                    style={{
+                      display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px",
+                      borderRadius: 999, fontSize: 12, fontWeight: 600, color: "#22A559",
+                      backgroundColor: "#22A5591A", whiteSpace: "nowrap",
+                    }}
+                  >
+                    <span style={{ width: 6, height: 6, borderRadius: 999, backgroundColor: "#22A559" }} />
+                    {s.status}
+                  </span>
+                </td>
               </tr>
             ))}
-            {filteredTasks.length === 0 && (
+            {filteredSites.length === 0 && (
               <tr>
-                <td colSpan={7} style={{ padding: "40px 14px", textAlign: "center", color: theme.textMuted, fontSize: 13 }}>
-                  ไม่พบงานที่ตรงกับตัวกรองที่เลือก ลองปรับเงื่อนไขการค้นหาใหม่
+                <td colSpan={10} style={{ padding: "40px 14px", textAlign: "center", color: theme.textMuted, fontSize: 13 }}>
+                  ไม่พบไซต์งานที่ตรงกับคำค้นหา ลองปรับคำค้นหาใหม่
                 </td>
               </tr>
             )}
@@ -1142,19 +1826,19 @@ function POSummaryView({ theme, poCounts, poPieData, poBucketData, period, setPe
 }
  
 /* ------------------------------------------------------------------ */
-/* Generic Google-Sheet-linked view (ประกันรถ, Site Master ฯลฯ)         */
+/* Generic Google-Sheet-linked view (ประกันรถ ฯลฯ)                      */
 /* ------------------------------------------------------------------ */
  
 function GenericSheetView({ theme, inputStyle, module, state, onReload }) {
   const [search, setSearch] = useState("");
  
-  if (!module.sheetUrl) {
+  if (!module.sheetUrl && !(module.data && module.data.length)) {
     return (
       <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, padding: 28, boxShadow: theme.shadow, textAlign: "center" }}>
         <FileSpreadsheet size={28} style={{ color: theme.textMuted, marginBottom: 10 }} />
-        <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, margin: "0 0 6px" }}>ยังไม่ได้เชื่อมต่อ Google Sheet สำหรับ “{module.label}”</h3>
+        <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, margin: "0 0 6px" }}>ยังไม่มีข้อมูลสำหรับ “{module.label}”</h3>
         <p style={{ fontSize: 12.5, color: theme.textMuted, maxWidth: 460, margin: "0 auto" }}>
-          เปิดไฟล์ Google Sheet ที่ต้องการ → File → Share → Publish to web → เลือกรูปแบบ CSV แล้วนำลิงก์ไปใส่ในตัวแปร <code>sheetUrl</code>
+          เพิ่มข้อมูลได้โดยใส่ array ใน <code>data</code> หรือเชื่อมต่อ Google Sheet ผ่าน <code>sheetUrl</code>
           ของรายการ <code>{module.id}</code> ใน CUSTOM_SHEETS ที่ต้นไฟล์นี้
         </p>
       </div>
@@ -1182,9 +1866,11 @@ function GenericSheetView({ theme, inputStyle, module, state, onReload }) {
             style={{ ...inputStyle, width: "100%", paddingLeft: 30 }}
           />
         </div>
-        <button onClick={onReload} style={{ ...inputStyle, display: "flex", alignItems: "center", gap: 6, cursor: "pointer", color: theme.textMuted }}>
-          <RefreshCw size={13} /> โหลดข้อมูลใหม่
-        </button>
+        {module.sheetUrl && (
+          <button onClick={onReload} style={{ ...inputStyle, display: "flex", alignItems: "center", gap: 6, cursor: "pointer", color: theme.textMuted }}>
+            <RefreshCw size={13} /> โหลดข้อมูลใหม่
+          </button>
+        )}
         <div style={{ fontSize: 12, color: theme.textMuted, marginLeft: "auto" }}>
           {loading ? "กำลังโหลด…" : `พบ ${filteredRows.length} แถว`}
         </div>
