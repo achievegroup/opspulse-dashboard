@@ -3,34 +3,35 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>OpsPulse — Task &amp; Executive View</title>
-
+<title>ACHIEVED — Task &amp; Executive View</title>
+ 
 <!-- React + ReactDOM + Babel (in-browser JSX) + Recharts, all loaded from CDN -->
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/prop-types/prop-types.min.js" crossorigin></script>
 <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
-
+<script src="https://unpkg.com/papaparse@5/papaparse.min.js" crossorigin></script>
+ 
 <style>
   html, body { margin: 0; padding: 0; height: 100%; background: #F3F8F6; }
   #root { min-height: 100vh; }
 </style>
 </head>
 <body>
-<div id="root">Loading OpsPulse…</div>
-
+<div id="root">Loading …</div>
+ 
 <script type="text/plain" id="app-source">
-const { useState, useMemo } = React;
+const { useState, useMemo, useEffect } = React;
 const {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } = Recharts;
-
+ 
 /* ------------------------------------------------------------------ */
 /* Minimal inline icon set (replaces lucide-react, no extra dependency) */
 /* ------------------------------------------------------------------ */
-
+ 
 function IconBase({ children, size = 16, strokeWidth = 2, ...rest }) {
   return (
     <svg
@@ -93,41 +94,17 @@ const Sparkles = (p) => (
     <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
   </IconBase>
 );
-
+ 
 /* ------------------------------------------------------------------ */
 /* Company / theme configuration                                       */
 /* ------------------------------------------------------------------ */
-
+ 
 const COMPANIES = {
-  acthief: {
-    id: "acthief",
-    name: "บริษัท แอคชีฟแพลน จำกัด",
-    shortName: "ACHIEVED PLAN CO.,LTD.",
-    tagline: "งานบริการทำความสะอาดอาคาร และวิศวกรรมดูแลระบบอาคาร",
-    monogram: "AP",
-    theme: {
-      mode: "light",
-      bg: "#F3F8F6",
-      surface: "#FFFFFF",
-      surfaceAlt: "#EAF4F1",
-      primary: "#177567",
-      primaryDark: "#0E4E45",
-      accent: "#3FB6A4",
-      text: "#12302B",
-      textMuted: "#5C7C76",
-      border: "#DCEBE7",
-      sidebarBg: "#0E3F38",
-      sidebarText: "#CFE7E1",
-      sidebarMuted: "#82AFA6",
-      sidebarActive: "#155A4F",
-      shadow: "0 8px 24px -12px rgba(15, 62, 54, 0.25)",
-    },
-  },
   engpower: {
     id: "engpower",
-    name: "บริษัท เอ็นจ์-เพาเวอร์ เซอร์วิสเซส จำกัด",
-    shortName: "ENG-POWER SERVICES CO.,LTD.",
-    tagline: "งานวิศวกรรมอาคาร ระบบไฟฟ้า และระบบเครื่องกล",
+    name: "บริษัท เอ็นจ์-เพาเวอร์เซอร์วิสเซส จำกัด",
+    shortName: "ENG-POWER SERVICES CO., LTD.",
+    tagline: "งานวิศวกรรมดูแลระบบอาคาร",
     monogram: "EP",
     theme: {
       mode: "dark",
@@ -147,33 +124,65 @@ const COMPANIES = {
       shadow: "0 8px 28px -10px rgba(0,0,0,0.55)",
     },
   },
+  achieved: {
+    id: "achieved",
+    name: "บริษัท แอคชีฟแพลน จำกัด",
+    shortName: "ACHIEVED PLAN CO., LTD.",
+    tagline: "งานบริการทำความสะอาดอาคารและงานสวน",
+    monogram: "AP",
+    theme: {
+      mode: "light",
+      bg: "#F3F8F6",
+      surface: "#FFFFFF",
+      surfaceAlt: "#EAF4F1",
+      primary: "#177567",
+      primaryDark: "#0E4E45",
+      accent: "#3FB6A4",
+      text: "#12302B",
+      textMuted: "#5C7C76",
+      border: "#DCEBE7",
+      sidebarBg: "#0E3F38",
+      sidebarText: "#CFE7E1",
+      sidebarMuted: "#82AFA6",
+      sidebarActive: "#155A4F",
+      shadow: "0 8px 24px -12px rgba(15, 62, 54, 0.25)",
+    },
+  },
 };
-
+ 
 const STATUS_META = {
   pending: { label: "รอดำเนินการ", color: "#94A3B8" },
   inprogress: { label: "กำลังดำเนินการ", color: "ACCENT" },
   completed: { label: "เสร็จสิ้น", color: "#22A559" },
   overdue: { label: "เกินกำหนด", color: "#E2482F" },
 };
-
+ 
 /* ------------------------------------------------------------------ */
-/* Mock data                                                           */
+/* Google Sheet connection                                             */
 /* ------------------------------------------------------------------ */
-
-const TASKS = [
-  { id: "AP-2207", company: "acthief", site: "ABC Tower สำนักงานใหญ่", title: "บิ๊กคลีนนิ่งพื้นหินขัด ชั้น 1-5", type: "แม่บ้าน", assignee: "สมหญิง ใจงาม", start: "14 ก.ค. 2569", end: "18 ก.ค. 2569", status: "completed" },
-  { id: "AP-2208", company: "acthief", site: "The Grand Residence คอนโด", title: "ทำความสะอาดกระจกภายนอกอาคาร (โรยตัว)", type: "แม่บ้าน", assignee: "ประยูร แก้วมณี", start: "16 ก.ค. 2569", end: "20 ก.ค. 2569", status: "inprogress" },
-  { id: "AP-2209", company: "acthief", site: "Central Plaza สาขาลาดพร้าว", title: "ขัดเคลือบเงาพื้นหินอ่อนโซนฟู้ดคอร์ท", type: "แม่บ้าน", assignee: "วิภา สุขสันต์", start: "10 ก.ค. 2569", end: "12 ก.ค. 2569", status: "overdue" },
-  { id: "AP-2210", company: "acthief", site: "โรงพยาบาลกรุงเทพพัฒนา", title: "ทำความสะอาดฆ่าเชื้อห้องผ่าตัด (Deep Clean)", type: "แม่บ้าน", assignee: "อรทัย ศรีสุข", start: "19 ก.ค. 2569", end: "21 ก.ค. 2569", status: "inprogress" },
-  { id: "AP-2211", company: "acthief", site: "โรงเรียนนานาชาติสายไหม", title: "ทำความสะอาดหอประชุมหลังกิจกรรมกีฬาสี", type: "แม่บ้าน", assignee: "สมหญิง ใจงาม", start: "8 ก.ค. 2569", end: "9 ก.ค. 2569", status: "completed" },
-  { id: "AP-2212", company: "acthief", site: "ABC Tower สำนักงานใหญ่", title: "ตรวจสอบและบำรุงรักษาลิฟต์โดยสาร 4 ตัว", type: "วิศวกรรมอาคาร", assignee: "กมล วิศวกร", start: "15 ก.ค. 2569", end: "17 ก.ค. 2569", status: "completed" },
-  { id: "AP-2213", company: "acthief", site: "The Grand Residence คอนโด", title: "ตรวจเช็คระบบปั๊มน้ำและถังเก็บน้ำใต้ดิน", type: "วิศวกรรมอาคาร", assignee: "ธนพล ช่างเทคนิค", start: "18 ก.ค. 2569", end: "22 ก.ค. 2569", status: "pending" },
-  { id: "AP-2214", company: "acthief", site: "Central Plaza สาขาลาดพร้าว", title: "ตรวจสอบระบบดับเพลิงและสปริงเกอร์ประจำเดือน", type: "วิศวกรรมอาคาร", assignee: "กมล วิศวกร", start: "20 ก.ค. 2569", end: "24 ก.ค. 2569", status: "pending" },
-  { id: "AP-2215", company: "acthief", site: "โรงพยาบาลกรุงเทพพัฒนา", title: "ล้างเครื่องปรับอากาศ Fan Coil Unit ชั้น 6-10", type: "วิศวกรรมอาคาร", assignee: "ธนพล ช่างเทคนิค", start: "5 ก.ค. 2569", end: "7 ก.ค. 2569", status: "overdue" },
-  { id: "AP-2216", company: "acthief", site: "โรงเรียนนานาชาติสายไหม", title: "ซักพรมห้องสมุดและห้องเรียนดนตรี", type: "แม่บ้าน", assignee: "อรทัย ศรีสุข", start: "21 ก.ค. 2569", end: "23 ก.ค. 2569", status: "pending" },
-  { id: "AP-2217", company: "acthief", site: "ABC Tower สำนักงานใหญ่", title: "ทำความสะอาดพรมสำนักงานทุกชั้น (รายไตรมาส)", type: "แม่บ้าน", assignee: "ประยูร แก้วมณี", start: "1 ก.ค. 2569", end: "3 ก.ค. 2569", status: "completed" },
-  { id: "AP-2218", company: "acthief", site: "Central Plaza สาขาลาดพร้าว", title: "ตรวจเช็คระบบไฟฉุกเฉินและป้ายทางหนีไฟ", type: "วิศวกรรมอาคาร", assignee: "ธนพล ช่างเทคนิค", start: "17 ก.ค. 2569", end: "19 ก.ค. 2569", status: "inprogress" },
-
+// วาง URL ที่ได้จาก File → Share → Publish to web → เลือกชีต → รูปแบบ CSV
+// ตัวอย่าง: "https://docs.google.com/spreadsheets/d/e/2PACX-xxxx/pub?output=csv"
+// ถ้าปล่อยว่างไว้ ระบบจะใช้ข้อมูลตัวอย่าง (SAMPLE_TASKS) ด้านล่างแทน
+const SHEET_CSV_URL = "";
+ 
+/* ------------------------------------------------------------------ */
+/* Sample / fallback data (used if Google Sheet is not connected yet)  */
+/* ------------------------------------------------------------------ */
+ 
+const SAMPLE_TASKS = [
+  { id: "AP-2207", company: "achieved", site: "ABC Tower สำนักงานใหญ่", title: "บิ๊กคลีนนิ่งพื้นหินขัด ชั้น 1-5", type: "แม่บ้าน", assignee: "สมหญิง ใจงาม", start: "14 ก.ค. 2569", end: "18 ก.ค. 2569", status: "completed" },
+  { id: "AP-2208", company: "achieved", site: "The Grand Residence คอนโด", title: "ทำความสะอาดกระจกภายนอกอาคาร (โรยตัว)", type: "แม่บ้าน", assignee: "ประยูร แก้วมณี", start: "16 ก.ค. 2569", end: "20 ก.ค. 2569", status: "inprogress" },
+  { id: "AP-2209", company: "achieved", site: "Central Plaza สาขาลาดพร้าว", title: "ขัดเคลือบเงาพื้นหินอ่อนโซนฟู้ดคอร์ท", type: "แม่บ้าน", assignee: "วิภา สุขสันต์", start: "10 ก.ค. 2569", end: "12 ก.ค. 2569", status: "overdue" },
+  { id: "AP-2210", company: "achieved", site: "โรงพยาบาลกรุงเทพพัฒนา", title: "ทำความสะอาดฆ่าเชื้อห้องผ่าตัด (Deep Clean)", type: "แม่บ้าน", assignee: "อรทัย ศรีสุข", start: "19 ก.ค. 2569", end: "21 ก.ค. 2569", status: "inprogress" },
+  { id: "AP-2211", company: "achieved", site: "โรงเรียนนานาชาติสายไหม", title: "ทำความสะอาดหอประชุมหลังกิจกรรมกีฬาสี", type: "แม่บ้าน", assignee: "สมหญิง ใจงาม", start: "8 ก.ค. 2569", end: "9 ก.ค. 2569", status: "completed" },
+  { id: "AP-2212", company: "achieved", site: "ABC Tower สำนักงานใหญ่", title: "ตรวจสอบและบำรุงรักษาลิฟต์โดยสาร 4 ตัว", type: "วิศวกรรมอาคาร", assignee: "กมล วิศวกร", start: "15 ก.ค. 2569", end: "17 ก.ค. 2569", status: "completed" },
+  { id: "AP-2213", company: "achieved", site: "The Grand Residence คอนโด", title: "ตรวจเช็คระบบปั๊มน้ำและถังเก็บน้ำใต้ดิน", type: "วิศวกรรมอาคาร", assignee: "ธนพล ช่างเทคนิค", start: "18 ก.ค. 2569", end: "22 ก.ค. 2569", status: "pending" },
+  { id: "AP-2214", company: "achieved", site: "Central Plaza สาขาลาดพร้าว", title: "ตรวจสอบระบบดับเพลิงและสปริงเกอร์ประจำเดือน", type: "วิศวกรรมอาคาร", assignee: "กมล วิศวกร", start: "20 ก.ค. 2569", end: "24 ก.ค. 2569", status: "pending" },
+  { id: "AP-2215", company: "achieved", site: "โรงพยาบาลกรุงเทพพัฒนา", title: "ล้างเครื่องปรับอากาศ Fan Coil Unit ชั้น 6-10", type: "วิศวกรรมอาคาร", assignee: "ธนพล ช่างเทคนิค", start: "5 ก.ค. 2569", end: "7 ก.ค. 2569", status: "overdue" },
+  { id: "AP-2216", company: "achieved", site: "โรงเรียนนานาชาติสายไหม", title: "ซักพรมห้องสมุดและห้องเรียนดนตรี", type: "แม่บ้าน", assignee: "อรทัย ศรีสุข", start: "21 ก.ค. 2569", end: "23 ก.ค. 2569", status: "pending" },
+  { id: "AP-2217", company: "achieved", site: "ABC Tower สำนักงานใหญ่", title: "ทำความสะอาดพรมสำนักงานทุกชั้น (รายไตรมาส)", type: "แม่บ้าน", assignee: "ประยูร แก้วมณี", start: "1 ก.ค. 2569", end: "3 ก.ค. 2569", status: "completed" },
+  { id: "AP-2218", company: "achieved", site: "Central Plaza สาขาลาดพร้าว", title: "ตรวจเช็คระบบไฟฉุกเฉินและป้ายทางหนีไฟ", type: "วิศวกรรมอาคาร", assignee: "ธนพล ช่างเทคนิค", start: "17 ก.ค. 2569", end: "19 ก.ค. 2569", status: "inprogress" },
+ 
   { id: "EP-1102", company: "engpower", site: "XYZ Industrial Park โรงงาน A3", title: "ตรวจสอบตู้ MDB และ Circuit Breaker หลัก", type: "ระบบไฟฟ้า", assignee: "ประสิทธิ์ ช่างไฟ", start: "12 ก.ค. 2569", end: "14 ก.ค. 2569", status: "completed" },
   { id: "EP-1103", company: "engpower", site: "อาคารสำนักงาน สีลม คอมเพล็กซ์", title: "Overhaul เครื่องกำเนิดไฟฟ้าสำรอง 500 kVA", type: "ระบบเครื่องกล", assignee: "วรวุฒิ พลังงาน", start: "16 ก.ค. 2569", end: "22 ก.ค. 2569", status: "inprogress" },
   { id: "EP-1104", company: "engpower", site: "คลังสินค้าเย็น ColdChain Logistics", title: "ซ่อมบำรุงระบบทำความเย็น Chiller Plant", type: "ปรับอากาศ", assignee: "ณัฐพงษ์ เครื่องเย็น", start: "9 ก.ค. 2569", end: "11 ก.ค. 2569", status: "overdue" },
@@ -186,15 +195,15 @@ const TASKS = [
   { id: "EP-1111", company: "engpower", site: "อาคารสำนักงาน สีลม คอมเพล็กซ์", title: "ตรวจสอบระบบล่อฟ้าและสายกราวด์อาคาร (ประจำปี)", type: "ระบบไฟฟ้า", assignee: "ประสิทธิ์ ช่างไฟ", start: "2 ก.ค. 2569", end: "4 ก.ค. 2569", status: "completed" },
   { id: "EP-1112", company: "engpower", site: "โรงแรม Riverside Grand", title: "ติดตั้งระบบ VRF ปรับอากาศห้องพักชั้น 8-12", type: "ปรับอากาศ", assignee: "ณัฐพงษ์ เครื่องเย็น", start: "18 ก.ค. 2569", end: "26 ก.ค. 2569", status: "inprogress" },
 ];
-
+ 
 /* ------------------------------------------------------------------ */
 /* Small building blocks                                               */
 /* ------------------------------------------------------------------ */
-
+ 
 function resolveColor(theme, key) {
   return STATUS_META[key].color === "ACCENT" ? theme.accent : STATUS_META[key].color;
 }
-
+ 
 function StatusBadge({ status, theme }) {
   const meta = STATUS_META[status];
   const color = resolveColor(theme, status);
@@ -211,7 +220,7 @@ function StatusBadge({ status, theme }) {
     </span>
   );
 }
-
+ 
 function KpiCard({ icon: Icon, label, value, sub, theme, tint }) {
   return (
     <div
@@ -238,27 +247,63 @@ function KpiCard({ icon: Icon, label, value, sub, theme, tint }) {
     </div>
   );
 }
-
+ 
 /* ------------------------------------------------------------------ */
 /* Main component                                                      */
 /* ------------------------------------------------------------------ */
-
-function Dashboard() {
-  const [companyId, setCompanyId] = useState("acthief");
+ 
+function Dashboard({ onLogout }) {
+  const [companyId, setCompanyId] = useState("engpower");
   const [view, setView] = useState("dashboard");
   const [search, setSearch] = useState("");
   const [siteFilter, setSiteFilter] = useState("all");
   const [assigneeFilter, setAssigneeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [reportPeriod, setReportPeriod] = useState("week");
-
+ 
   const company = COMPANIES[companyId];
   const theme = company.theme;
-
-  const companyTasks = useMemo(() => TASKS.filter((t) => t.company === companyId), [companyId]);
+ 
+  const [tasksData, setTasksData] = useState(SAMPLE_TASKS);
+  const [loadingTasks, setLoadingTasks] = useState(false);
+  const [loadError, setLoadError] = useState("");
+ 
+  useEffect(() => {
+    if (!SHEET_CSV_URL) return; // ยังไม่ได้ตั้งค่า Google Sheet ใช้ข้อมูลตัวอย่างต่อไป
+    setLoadingTasks(true);
+    fetch(SHEET_CSV_URL)
+      .then((res) => {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.text();
+      })
+      .then((csvText) => {
+        const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+        const rows = parsed.data
+          .map((r) => ({
+            id: (r.id || "").toString().trim(),
+            company: (r.company || "").toString().trim(),
+            site: (r.site || "").toString().trim(),
+            title: (r.title || "").toString().trim(),
+            type: (r.type || "").toString().trim(),
+            assignee: (r.assignee || "").toString().trim(),
+            start: (r.start || "").toString().trim(),
+            end: (r.end || "").toString().trim(),
+            status: (r.status || "").toString().trim(),
+          }))
+          .filter((r) => r.id);
+        if (rows.length) setTasksData(rows);
+        setLoadError("");
+      })
+      .catch((err) => {
+        setLoadError("โหลดข้อมูลจาก Google Sheet ไม่สำเร็จ กำลังแสดงข้อมูลตัวอย่างแทน (" + err.message + ")");
+      })
+      .finally(() => setLoadingTasks(false));
+  }, []);
+ 
+  const companyTasks = useMemo(() => tasksData.filter((t) => t.company === companyId), [tasksData, companyId]);
   const sites = useMemo(() => Array.from(new Set(companyTasks.map((t) => t.site))), [companyTasks]);
   const assignees = useMemo(() => Array.from(new Set(companyTasks.map((t) => t.assignee))), [companyTasks]);
-
+ 
   const filteredTasks = useMemo(() => {
     return companyTasks.filter((t) => {
       if (siteFilter !== "all" && t.site !== siteFilter) return false;
@@ -272,38 +317,38 @@ function Dashboard() {
       return true;
     });
   }, [companyTasks, siteFilter, assigneeFilter, statusFilter, search]);
-
+ 
   const counts = useMemo(() => {
     const c = { total: companyTasks.length, pending: 0, inprogress: 0, completed: 0, overdue: 0 };
     companyTasks.forEach((t) => (c[t.status] += 1));
     return c;
   }, [companyTasks]);
-
+ 
   const pieData = ["pending", "inprogress", "completed", "overdue"].map((k) => ({
     key: k, name: STATUS_META[k].label, value: counts[k], color: resolveColor(theme, k),
   }));
-
+ 
   const siteData = sites.map((s) => ({
     site: s.length > 22 ? s.slice(0, 20) + "…" : s,
     fullSite: s,
     count: companyTasks.filter((t) => t.site === s).length,
   }));
-
+ 
   const clearFilters = () => {
     setSearch(""); setSiteFilter("all"); setAssigneeFilter("all"); setStatusFilter("all");
   };
-
+ 
   const NAV_ITEMS = [
     { id: "dashboard", label: "แดชบอร์ด", icon: LayoutDashboard },
     { id: "tasks", label: "รายการงาน", icon: ListChecks },
     { id: "report", label: "รายงานสรุป", icon: FileText },
   ];
-
+ 
   const inputStyle = {
     background: theme.surfaceAlt, border: `1px solid ${theme.border}`, borderRadius: 10,
     color: theme.text, fontSize: 13.5, padding: "8px 12px", outline: "none",
   };
-
+ 
   return (
     <div
       className="op-app"
@@ -343,7 +388,7 @@ function Dashboard() {
           .op-report-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
       `}</style>
-
+ 
       <aside
         className="no-print op-sidebar"
         style={{
@@ -367,7 +412,7 @@ function Dashboard() {
             <div style={{ fontSize: 10.5, color: theme.sidebarMuted }}>Task &amp; Executive View</div>
           </div>
         </div>
-
+ 
         <div className="op-switcher" style={{ background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 4, display: "flex", gap: 4, marginBottom: 22 }}>
           {Object.values(COMPANIES).map((c) => {
             const active = c.id === companyId;
@@ -387,7 +432,7 @@ function Dashboard() {
             );
           })}
         </div>
-
+ 
         <nav className="op-nav" style={{ display: "flex", flexDirection: "column", gap: 3 }}>
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
@@ -410,7 +455,7 @@ function Dashboard() {
             );
           })}
         </nav>
-
+ 
         <div className="op-footer" style={{ marginTop: "auto", padding: "14px 12px", borderRadius: 12, background: "rgba(255,255,255,0.04)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: theme.sidebarMuted, marginBottom: 6 }}>
             <Sparkles size={12} /> กำลังดูข้อมูลของ
@@ -418,7 +463,7 @@ function Dashboard() {
           <div style={{ fontSize: 12.5, fontWeight: 600, color: "#fff", lineHeight: 1.4 }}>{company.name}</div>
         </div>
       </aside>
-
+ 
       <main className="print-area op-main" style={{ flex: 1, minWidth: 0, padding: "26px 32px 60px" }}>
         <div className="no-print" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 26 }}>
           <div>
@@ -426,16 +471,42 @@ function Dashboard() {
               {company.shortName}
             </div>
             <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 22, fontWeight: 700, margin: 0 }}>
-              {view === "dashboard" && "ภาพรวมงานผู้บริหาร"}
-              {view === "tasks" && "รายการติดตามงาน"}
+              {view === "dashboard" && company.name}
+              {view === "tasks" && company.name}
               {view === "report" && "รายงานสรุปผลการดำเนินงาน"}
             </h1>
             <p style={{ fontSize: 13, color: theme.textMuted, margin: "4px 0 0" }}>{company.tagline}</p>
           </div>
+          <button
+            onClick={onLogout}
+            style={{
+              border: `1px solid ${theme.border}`, background: theme.surface, color: theme.textMuted,
+              borderRadius: 10, padding: "8px 14px", fontSize: 12.5, fontWeight: 600, cursor: "pointer",
+            }}
+          >
+            ออกจากระบบ
+          </button>
         </div>
-
+ 
+        {loadingTasks && (
+          <div className="no-print" style={{ marginBottom: 16, fontSize: 12.5, color: theme.textMuted }}>
+            กำลังโหลดข้อมูลล่าสุดจาก Google Sheet…
+          </div>
+        )}
+        {loadError && (
+          <div
+            className="no-print"
+            style={{
+              marginBottom: 16, padding: "10px 14px", borderRadius: 10, fontSize: 12.5,
+              background: "#E2482F1A", color: "#E2482F", border: "1px solid #E2482F33",
+            }}
+          >
+            {loadError}
+          </div>
+        )}
+ 
         {view === "dashboard" && <DashboardView theme={theme} counts={counts} pieData={pieData} siteData={siteData} />}
-
+ 
         {view === "tasks" && (
           <TasksView
             theme={theme} inputStyle={inputStyle} sites={sites} assignees={assignees}
@@ -446,7 +517,7 @@ function Dashboard() {
             clearFilters={clearFilters} filteredTasks={filteredTasks}
           />
         )}
-
+ 
         {view === "report" && (
           <ReportView
             theme={theme} company={company} counts={counts} siteData={siteData}
@@ -457,11 +528,11 @@ function Dashboard() {
     </div>
   );
 }
-
+ 
 /* ------------------------------------------------------------------ */
 /* Dashboard view                                                      */
 /* ------------------------------------------------------------------ */
-
+ 
 function DashboardView({ theme, counts, pieData, siteData }) {
   return (
     <>
@@ -471,7 +542,7 @@ function DashboardView({ theme, counts, pieData, siteData }) {
         <KpiCard icon={CheckCircle2} label="เสร็จสิ้นแล้ว" value={counts.completed} sub="ปิดงานเรียบร้อย" theme={theme} tint="#22A559" />
         <KpiCard icon={AlertTriangle} label="เกินกำหนด" value={counts.overdue} sub="ต้องเร่งติดตาม" theme={theme} tint="#E2482F" />
       </div>
-
+ 
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
         <div style={{ flex: "1 1 340px", background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, padding: 20, boxShadow: theme.shadow }}>
           <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14.5, margin: "0 0 4px" }}>สัดส่วนสถานะงาน</h3>
@@ -495,7 +566,7 @@ function DashboardView({ theme, counts, pieData, siteData }) {
             ))}
           </div>
         </div>
-
+ 
         <div style={{ flex: "1.3 1 380px", background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, padding: 20, boxShadow: theme.shadow }}>
           <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14.5, margin: "0 0 4px" }}>จำนวนงานแยกตามไซต์งาน</h3>
           <p style={{ fontSize: 12, color: theme.textMuted, margin: "0 0 8px" }}>Site / Project Breakdown</p>
@@ -519,11 +590,11 @@ function DashboardView({ theme, counts, pieData, siteData }) {
     </>
   );
 }
-
+ 
 /* ------------------------------------------------------------------ */
 /* Task list view                                                      */
 /* ------------------------------------------------------------------ */
-
+ 
 function TasksView({
   theme, inputStyle, sites, assignees,
   search, setSearch, siteFilter, setSiteFilter,
@@ -559,7 +630,7 @@ function TasksView({
         </button>
         <div style={{ fontSize: 12, color: theme.textMuted, marginLeft: "auto" }}>พบ {filteredTasks.length} งาน</div>
       </div>
-
+ 
       <div className="op-scroll" style={{ overflowX: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
           <thead>
@@ -594,15 +665,15 @@ function TasksView({
     </div>
   );
 }
-
+ 
 /* ------------------------------------------------------------------ */
 /* Report view                                                         */
 /* ------------------------------------------------------------------ */
-
+ 
 function ReportView({ theme, company, counts, siteData, reportPeriod, setReportPeriod }) {
   const periodLabel = reportPeriod === "week" ? "ประจำสัปดาห์ที่ 3 กรกฎาคม 2569" : "ประจำเดือนกรกฎาคม 2569";
   const completionRate = counts.total ? Math.round((counts.completed / counts.total) * 100) : 0;
-
+ 
   return (
     <div>
       <div className="no-print" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
@@ -631,7 +702,7 @@ function ReportView({ theme, company, counts, siteData, reportPeriod, setReportP
           <Printer size={14} /> พิมพ์ / ส่งออกรายงาน
         </button>
       </div>
-
+ 
       <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, padding: 28, boxShadow: theme.shadow }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: `1px solid ${theme.border}`, paddingBottom: 18, marginBottom: 20 }}>
           <div>
@@ -647,7 +718,7 @@ function ReportView({ theme, company, counts, siteData, reportPeriod, setReportP
             {company.monogram}
           </div>
         </div>
-
+ 
         <div className="op-report-grid" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 14, marginBottom: 26 }}>
           {[
             ["งานทั้งหมด", counts.total],
@@ -662,7 +733,7 @@ function ReportView({ theme, company, counts, siteData, reportPeriod, setReportP
             </div>
           ))}
         </div>
-
+ 
         <div style={{ marginBottom: 24 }}>
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, marginBottom: 6, color: theme.textMuted }}>
             <span>อัตราความสำเร็จของงาน</span>
@@ -672,7 +743,7 @@ function ReportView({ theme, company, counts, siteData, reportPeriod, setReportP
             <div style={{ height: "100%", width: `${completionRate}%`, background: theme.primary, borderRadius: 999 }} />
           </div>
         </div>
-
+ 
         <h4 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, margin: "0 0 10px" }}>สรุปงานแยกตามไซต์งาน</h4>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
           <thead>
@@ -690,7 +761,7 @@ function ReportView({ theme, company, counts, siteData, reportPeriod, setReportP
             ))}
           </tbody>
         </table>
-
+ 
         <div style={{ marginTop: 22, fontSize: 11.5, color: theme.textMuted, textAlign: "right" }}>
           ออกรายงานโดยระบบ OpsPulse · 20 กรกฎาคม 2569
         </div>
@@ -698,11 +769,104 @@ function ReportView({ theme, company, counts, siteData, reportPeriod, setReportP
     </div>
   );
 }
-
+ 
+/* ------------------------------------------------------------------ */
+/* Login (client-side gate — see setup notes in chat for limitations)  */
+/* ------------------------------------------------------------------ */
+ 
+const AUTH_STORAGE_KEY = "opspulse_authed";
+// เปลี่ยนชื่อผู้ใช้ / รหัสผ่านได้ตรงนี้
+const APP_USERNAME = "achieve";
+const APP_PASSWORD = "Achieve@2026";
+ 
+const loginInputStyle = {
+  width: "100%", boxSizing: "border-box", background: "#182339", border: "1px solid #232F49",
+  borderRadius: 9, color: "#E7ECF7", fontSize: 14, padding: "10px 12px", outline: "none",
+};
+ 
+function LoginScreen({ onLogin }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+ 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (username === APP_USERNAME && password === APP_PASSWORD) {
+      localStorage.setItem(AUTH_STORAGE_KEY, "1");
+      setError("");
+      onLogin();
+    } else {
+      setError("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+    }
+  };
+ 
+  return (
+    <div
+      style={{
+        minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
+        background: "#0C1220", fontFamily: "'Inter', sans-serif", padding: 20,
+      }}
+    >
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap');`}</style>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          width: 340, maxWidth: "100%", background: "#131B2E", border: "1px solid #232F49", borderRadius: 18,
+          padding: "36px 32px", boxShadow: "0 20px 60px -20px rgba(0,0,0,0.6)",
+        }}
+      >
+        <div
+          style={{
+            width: 44, height: 44, borderRadius: 12, background: "#F97316", display: "flex",
+            alignItems: "center", justifyContent: "center", color: "#fff",
+            fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, marginBottom: 18,
+          }}
+        >
+          OP
+        </div>
+        <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, color: "#fff", margin: "0 0 4px" }}>OpsPulse</h1>
+        <p style={{ fontSize: 13, color: "#8B96B4", margin: "0 0 24px" }}>เข้าสู่ระบบเพื่อดูแดชบอร์ด</p>
+ 
+        <label style={{ display: "block", fontSize: 12.5, color: "#C6CFE6", marginBottom: 6 }}>ชื่อผู้ใช้</label>
+        <input value={username} onChange={(e) => setUsername(e.target.value)} style={loginInputStyle} autoFocus />
+ 
+        <label style={{ display: "block", fontSize: 12.5, color: "#C6CFE6", margin: "16px 0 6px" }}>รหัสผ่าน</label>
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} style={loginInputStyle} />
+ 
+        {error && <div style={{ marginTop: 14, fontSize: 12.5, color: "#F87171" }}>{error}</div>}
+ 
+        <button
+          type="submit"
+          style={{
+            marginTop: 22, width: "100%", border: "none", cursor: "pointer", borderRadius: 10,
+            padding: "11px 0", fontSize: 14, fontWeight: 700, color: "#fff", background: "#F97316",
+            fontFamily: "'Space Grotesk', sans-serif",
+          }}
+        >
+          เข้าสู่ระบบ
+        </button>
+      </form>
+    </div>
+  );
+}
+ 
+function App() {
+  const [authed, setAuthed] = useState(() => localStorage.getItem(AUTH_STORAGE_KEY) === "1");
+  if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
+  return (
+    <Dashboard
+      onLogout={() => {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+        setAuthed(false);
+      }}
+    />
+  );
+}
+ 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<Dashboard />);
+root.render(<App />);
 </script>
-
+ 
 <script>
   // Manually compile the JSX above using the classic runtime (React.createElement),
   // avoiding Babel's newer "automatic" runtime which injects an ES `import` statement
