@@ -728,6 +728,23 @@ function Dashboard({ onLogout }) {
     return { total, taxSoon, actSoon, insSoon, noIns };
   }, []);
 
+  // --- Insurance (ประกันรถ) expiring-soon detail list (สำหรับแสดงในหน้าแดชบอร์ด) ---
+  const insuranceExpiringSoon = useMemo(() => {
+    const rows = [];
+    SAMPLE_INSURANCE.forEach((v) => {
+      if (v.taxDaysLeft !== "" && v.taxDaysLeft !== undefined && Number(v.taxDaysLeft) <= 30) {
+        rows.push({ plate: v.plate, model: v.model, item: "ภาษี", expiry: v.taxExpiry, daysLeft: Number(v.taxDaysLeft) });
+      }
+      if (v.actDaysLeft !== "" && v.actDaysLeft !== undefined && Number(v.actDaysLeft) <= 30) {
+        rows.push({ plate: v.plate, model: v.model, item: "พรบ.", expiry: v.actExpiry, daysLeft: Number(v.actDaysLeft) });
+      }
+      if (v.insDaysLeft !== "" && v.insDaysLeft !== undefined && Number(v.insDaysLeft) <= 30) {
+        rows.push({ plate: v.plate, model: v.model, item: "ประกันภัย", expiry: v.insExpiry, daysLeft: Number(v.insDaysLeft) });
+      }
+    });
+    return rows.sort((a, b) => a.daysLeft - b.daysLeft);
+  }, []);
+
   const clearPoFilters = () => {
     setPoSearch(""); setPoVendorFilter("all"); setPoStatusFilter("all");
   };
@@ -913,6 +930,7 @@ function Dashboard({ onLogout }) {
             poCounts={poCounts} poPieData={poPieData} poBucketData={poBucketData}
             poSummaryPeriod={poSummaryPeriod} setPoSummaryPeriod={setPoSummaryPeriod}
             totalSites={sitesData.length} insuranceSummary={insuranceSummary}
+            insuranceExpiringSoon={insuranceExpiringSoon}
           />
         )}
 
@@ -955,7 +973,7 @@ function Dashboard({ onLogout }) {
 function DashboardView({
   theme, counts, pieData, siteData,
   poCounts, poPieData, poBucketData, poSummaryPeriod, setPoSummaryPeriod,
-  totalSites, insuranceSummary,
+  totalSites, insuranceSummary, insuranceExpiringSoon,
 }) {
   const outstandingPO = poCounts.pending + poCounts.approved + poCounts.ordered;
   return (
@@ -963,8 +981,6 @@ function DashboardView({
       <div className="kpi-row" style={{ display: "flex", gap: 16, marginBottom: 22, flexWrap: "wrap" }}>
         <KpiCard icon={ListTodo} label="งานทั้งหมด" value={counts.total} sub="ทุกไซต์งาน" theme={theme} tint={theme.primary} />
         <KpiCard icon={Clock} label="กำลังดำเนินการ" value={counts.inprogress} sub="อยู่ระหว่างปฏิบัติงาน" theme={theme} tint={theme.accent} />
-        <KpiCard icon={CheckCircle2} label="เสร็จสิ้นแล้ว" value={counts.completed} sub="ปิดงานเรียบร้อย" theme={theme} tint="#22A559" />
-        <KpiCard icon={AlertTriangle} label="เกินกำหนด" value={counts.overdue} sub="ต้องเร่งติดตาม" theme={theme} tint="#E2482F" />
       </div>
 
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
@@ -1087,13 +1103,55 @@ function DashboardView({
 
       {/* --- สรุปจำนวนไซต์งาน และสรุปประกันรถ --- */}
       <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, margin: "0 0 14px" }}>สรุปไซต์งาน &amp; ประกันรถ</h2>
-      <div className="kpi-row" style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+      <div className="kpi-row" style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 22 }}>
         <KpiCard icon={Building2} label="ไซต์งานทั้งหมด" value={totalSites} sub="ไซต์งานที่ดูแลอยู่" theme={theme} tint={theme.primary} />
         <KpiCard icon={Car} label="รถทั้งหมด" value={insuranceSummary.total} sub="คันที่มีในระบบ" theme={theme} tint={theme.accent} />
         <KpiCard icon={AlertTriangle} label="ภาษีใกล้หมดอายุ" value={insuranceSummary.taxSoon} sub="เหลือ ≤ 30 วัน (คัน)" theme={theme} tint="#E2482F" />
         <KpiCard icon={AlertTriangle} label="พรบ. ใกล้หมดอายุ" value={insuranceSummary.actSoon} sub="เหลือ ≤ 30 วัน (คัน)" theme={theme} tint="#E2482F" />
         <KpiCard icon={AlertTriangle} label="ประกันภัยใกล้หมดอายุ" value={insuranceSummary.insSoon} sub="เหลือ ≤ 30 วัน (คัน)" theme={theme} tint="#E2482F" />
       </div>
+
+      {insuranceExpiringSoon.length > 0 && (
+        <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, boxShadow: theme.shadow, overflow: "hidden" }}>
+          <div style={{ padding: "16px 20px", borderBottom: `1px solid ${theme.border}`, display: "flex", alignItems: "center", gap: 8 }}>
+            <AlertTriangle size={15} style={{ color: "#E2482F" }} />
+            <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14.5, margin: 0 }}>รถที่ใกล้ครบกำหนด (ภาษี / พรบ. / ประกันภัย ≤ 30 วัน)</h3>
+          </div>
+          <div className="op-scroll" style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+              <thead>
+                <tr style={{ background: theme.surfaceAlt }}>
+                  {["ทะเบียนรถ", "ยี่ห้อ/รุ่นรถ", "รายการ", "วันหมดอายุ", "คงเหลือ (วัน)"].map((h) => (
+                    <th key={h} style={{ textAlign: "left", padding: "10px 14px", fontSize: 11.5, fontWeight: 600, color: theme.textMuted, whiteSpace: "nowrap" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {insuranceExpiringSoon.map((r, i) => (
+                  <tr key={i} className="op-row" style={{ borderTop: `1px solid ${theme.border}` }}>
+                    <td style={{ padding: "11px 14px", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: theme.primary, whiteSpace: "nowrap" }}>{r.plate}</td>
+                    <td style={{ padding: "11px 14px", whiteSpace: "nowrap" }}>{r.model}</td>
+                    <td style={{ padding: "11px 14px", whiteSpace: "nowrap" }}>{r.item}</td>
+                    <td style={{ padding: "11px 14px", whiteSpace: "nowrap", color: theme.textMuted, fontSize: 12.5 }}>{r.expiry}</td>
+                    <td style={{ padding: "11px 14px", whiteSpace: "nowrap" }}>
+                      <span
+                        style={{
+                          display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px",
+                          borderRadius: 999, fontSize: 12, fontWeight: 600,
+                          color: r.daysLeft <= 7 ? "#E2482F" : "#E8B93F",
+                          backgroundColor: (r.daysLeft <= 7 ? "#E2482F" : "#E8B93F") + "1A",
+                        }}
+                      >
+                        {r.daysLeft} วัน
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </>
   );
 }
