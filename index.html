@@ -345,24 +345,24 @@ const SAMPLE_TASKS = [
 ];
 
 // รายการ PO ตัวอย่าง (แทนที่ด้วยข้อมูลจริงผ่าน PO_SHEET_CSV_URL_BY_COMPANY ด้านบนได้)
+// ไซต์งานที่ใช้อ้างอิงด้านล่างนี้ มาจากรายชื่อในแถบ "ไซต์งาน" (SAMPLE_SITES) ด้านบน
 const SAMPLE_POS = [
-  { id: "AP-PO-0489", company: "achieved", site: "ABC Tower สำนักงานใหญ่", vendor: "สวนสวยการ์เดน", description: "ปุ๋ยและอุปกรณ์ตัดแต่งสวน", qty: 5, amount: 12800, date: "25 มิ.ย. 2569", status: "paid" },
-  { id: "AP-PO-0492", company: "achieved", site: "Central Plaza สาขาลาดพร้าว", vendor: "ยูนิฟอร์มโปร", description: "ถุงมือยางและอุปกรณ์เซฟตี้", qty: 20, amount: 9700, date: "28 มิ.ย. 2569", status: "paid" },
-  { id: "AP-PO-0501", company: "achieved", site: "ABC Tower สำนักงานใหญ่", vendor: "เคมีภัณฑ์สะอาด", description: "น้ำยาทำความสะอาดพื้นและกระจก (ล็อตเดือน ก.ค.)", qty: 60, amount: 48500, date: "3 ก.ค. 2569", status: "paid" },
-  { id: "AP-PO-0502", company: "achieved", site: "The Grand Residence คอนโด", vendor: "อุปกรณ์ทำความสะอาดไทย", description: "ไม้ถูพื้นและอุปกรณ์เซฟตี้", qty: 30, amount: 22300, date: "8 ก.ค. 2569", status: "ordered" },
-  { id: "AP-PO-0503", company: "achieved", site: "โรงเรียนนานาชาติสายไหม", vendor: "ยูนิฟอร์มโปร", description: "ชุดยูนิฟอร์มพนักงานแม่บ้าน 40 ชุด", qty: 40, amount: 68000, date: "12 ก.ค. 2569", status: "approved" },
-  { id: "AP-PO-0504", company: "achieved", site: "Central Plaza สาขาลาดพร้าว", vendor: "เคมีภัณฑ์สะอาด", description: "เคมีขัดพื้นหินอ่อน", qty: 10, amount: 15600, date: "15 ก.ค. 2569", status: "pending" },
-  { id: "AP-PO-0505", company: "achieved", site: "โรงพยาบาลกรุงเทพพัฒนา", vendor: "เครื่องจักรทำความสะอาด", description: "เครื่องขัดพื้นไฟฟ้า 2 เครื่อง", qty: 2, amount: 89000, date: "18 ก.ค. 2569", status: "pending" },
-  { id: "AP-PO-0510", company: "achieved", site: "ABC Tower สำนักงานใหญ่", vendor: "อุปกรณ์ทำความสะอาดไทย", description: "ถังขยะแยกประเภท 20 ใบ", qty: 20, amount: 34200, date: "20 ก.ค. 2569", status: "cancelled" },
+  { id: "AP-PO-0489", company: "achieved", site: "รพ.สมเด็จพระปิ่นเกล้า อาคารบำบัด", vendor: "เคมีภัณฑ์สะอาด", description: "น้ำยาทำความสะอาดพื้นและกระจก (ล็อตเดือน ก.ค.)", qty: 60, amount: 48500, date: "3 ก.ค. 2569", status: "paid" },
+  { id: "AP-PO-0492", company: "achieved", site: "รพ.สมเด็จพระปิ่นเกล้า อาคาร 14 ชั้น", vendor: "ยูนิฟอร์มโปร", description: "ถุงมือยางและอุปกรณ์เซฟตี้", qty: 20, amount: 9700, date: "28 มิ.ย. 2569", status: "paid" },
+  { id: "AP-PO-0501", company: "achieved", site: "รพ.สมเด็จพระปิ่นเกล้า อาคาร 80 ปี", vendor: "อุปกรณ์ทำความสะอาดไทย", description: "ไม้ถูพื้นและอุปกรณ์เซฟตี้", qty: 30, amount: 22300, date: "8 ก.ค. 2569", status: "ordered" },
+  { id: "AP-PO-0502", company: "achieved", site: "ศูนย์การแพทย์ปัญญานันทภิกขุ ชลประทาน", vendor: "เคมีภัณฑ์สะอาด", description: "เคมีขัดพื้นหินอ่อน", qty: 10, amount: 15600, date: "15 ก.ค. 2569", status: "pending" },
+  { id: "AP-PO-0503", company: "achieved", site: "มหิดล คณะวิทยาศาสตร์ พญาไท", vendor: "ยูนิฟอร์มโปร", description: "ชุดยูนิฟอร์มพนักงานแม่บ้าน 40 ชุด", qty: 40, amount: 68000, date: "12 ก.ค. 2569", status: "approved" },
+  { id: "AP-PO-0504", company: "achieved", site: "รพ.สมเด็จพระปิ่นเกล้า อาคารบำบัด", vendor: "เครื่องจักรทำความสะอาด", description: "เครื่องขัดพื้นไฟฟ้า 2 เครื่อง", qty: 2, amount: 89000, date: "18 ก.ค. 2569", status: "pending" },
+  { id: "AP-PO-0505", company: "achieved", site: "สำนักงาน กสทช.", vendor: "อุปกรณ์ทำความสะอาดไทย", description: "ถังขยะแยกประเภท 20 ใบ", qty: 20, amount: 34200, date: "20 ก.ค. 2569", status: "cancelled" },
 
-  { id: "EP-PO-3288", company: "engpower", site: "โรงแรม Riverside Grand", vendor: "คูลลิ่งเทคโนโลยี", description: "น้ำยาแอร์ R410A", qty: 8, amount: 27600, date: "24 มิ.ย. 2569", status: "paid" },
-  { id: "EP-PO-3291", company: "engpower", site: "อาคารสำนักงาน สีลม คอมเพล็กซ์", vendor: "เจนเนอเรเตอร์ไทย", description: "แบตเตอรี่สตาร์ทเครื่องกำเนิดไฟฟ้า", qty: 2, amount: 15400, date: "27 มิ.ย. 2569", status: "paid" },
-  { id: "EP-PO-3301", company: "engpower", site: "XYZ Industrial Park โรงงาน A3", vendor: "ไฟฟ้าเซฟตี้ซัพพลาย", description: "อะไหล่เบรกเกอร์ MDB", qty: 4, amount: 76500, date: "2 ก.ค. 2569", status: "paid" },
-  { id: "EP-PO-3302", company: "engpower", site: "คลังสินค้าเย็น ColdChain Logistics", vendor: "คูลลิ่งเทคโนโลยี", description: "คอมเพรสเซอร์ Chiller สำรอง", qty: 1, amount: 245000, date: "9 ก.ค. 2569", status: "ordered" },
-  { id: "EP-PO-3303", company: "engpower", site: "อาคารสำนักงาน สีลม คอมเพล็กซ์", vendor: "เจนเนอเรเตอร์ไทย", description: "น้ำมันเครื่องและไส้กรองเครื่องกำเนิดไฟฟ้า", qty: 12, amount: 18900, date: "13 ก.ค. 2569", status: "approved" },
-  { id: "EP-PO-3304", company: "engpower", site: "XYZ Industrial Park โรงงาน A3", vendor: "ไฟฟ้าเซฟตี้ซัพพลาย", description: "สายไฟและท่อร้อยสาย", qty: 15, amount: 41200, date: "16 ก.ค. 2569", status: "pending" },
-  { id: "EP-PO-3305", company: "engpower", site: "โรงแรม Riverside Grand", vendor: "ลิฟต์เซอร์วิสโปร", description: "อะไหล่ลิฟต์ขนส่งสินค้า", qty: 3, amount: 132000, date: "19 ก.ค. 2569", status: "pending" },
-  { id: "EP-PO-3310", company: "engpower", site: "โรงแรม Riverside Grand", vendor: "ลิฟต์เซอร์วิสโปร", description: "ชุดสายเคเบิลลิฟต์โดยสาร", qty: 6, amount: 58900, date: "21 ก.ค. 2569", status: "cancelled" },
+  { id: "EP-PO-3288", company: "engpower", site: "การไฟฟ้าฝ่ายผลิตแห่งประเทศไทย(สำนักงานใหญ่)", vendor: "ไฟฟ้าเซฟตี้ซัพพลาย", description: "อะไหล่เบรกเกอร์ MDB", qty: 4, amount: 76500, date: "2 ก.ค. 2569", status: "paid" },
+  { id: "EP-PO-3291", company: "engpower", site: "สำนักงานปรมาณูเพื่อสันติ", vendor: "เจนเนอเรเตอร์ไทย", description: "แบตเตอรี่สตาร์ทเครื่องกำเนิดไฟฟ้า", qty: 2, amount: 15400, date: "27 มิ.ย. 2569", status: "paid" },
+  { id: "EP-PO-3301", company: "engpower", site: "สำนักงาน กสทช.", vendor: "คูลลิ่งเทคโนโลยี", description: "PM ระบบปรับอากาศ Chiller และ Cooling Tower", qty: 1, amount: 65000, date: "5 ก.ค. 2569", status: "paid" },
+  { id: "EP-PO-3302", company: "engpower", site: "การไฟฟ้าฝ่ายผลิตแห่งประเทศไทย(สำนักงานใหญ่)", vendor: "คูลลิ่งเทคโนโลยี", description: "คอมเพรสเซอร์ Chiller สำรอง", qty: 1, amount: 245000, date: "9 ก.ค. 2569", status: "ordered" },
+  { id: "EP-PO-3303", company: "engpower", site: "สำนักงานปรมาณูเพื่อสันติ", vendor: "เจนเนอเรเตอร์ไทย", description: "น้ำมันเครื่องและไส้กรองเครื่องกำเนิดไฟฟ้า", qty: 12, amount: 18900, date: "13 ก.ค. 2569", status: "approved" },
+  { id: "EP-PO-3304", company: "engpower", site: "ศูนย์การแพทย์ปัญญานันทภิกขุ ชลประทาน", vendor: "ไฟฟ้าเซฟตี้ซัพพลาย", description: "สายไฟและท่อร้อยสาย", qty: 15, amount: 41200, date: "16 ก.ค. 2569", status: "pending" },
+  { id: "EP-PO-3305", company: "engpower", site: "รพ.สมเด็จพระปิ่นเกล้า อาคาร 80 ปี", vendor: "ลิฟต์เซอร์วิสโปร", description: "อะไหล่ลิฟต์โดยสาร", qty: 3, amount: 132000, date: "19 ก.ค. 2569", status: "pending" },
+  { id: "EP-PO-3310", company: "engpower", site: "มหิดล คณะวิทยาศาสตร์ พญาไท", vendor: "ลิฟต์เซอร์วิสโปร", description: "ชุดสายเคเบิลลิฟต์โดยสาร", qty: 6, amount: 58900, date: "21 ก.ค. 2569", status: "cancelled" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -459,7 +459,7 @@ function Dashboard({ onLogout }) {
   const [statusFilter, setStatusFilter] = useState("all");
 
   const [poSearch, setPoSearch] = useState("");
-  const [poVendorFilter, setPoVendorFilter] = useState("all");
+  const [poSiteFilter, setPoSiteFilter] = useState("all");
   const [poStatusFilter, setPoStatusFilter] = useState("all");
   const [poSummaryPeriod, setPoSummaryPeriod] = useState("month");
 
@@ -650,7 +650,7 @@ function Dashboard({ onLogout }) {
     return c;
   }, [companyTasks]);
 
-  const pieData = ["pending", "inprogress", "completed", "overdue"].map((k) => ({
+  const pieData = ["pending", "inprogress"].map((k) => ({
     key: k, name: STATUS_META[k].label, value: counts[k], color: resolveColor(theme, k, STATUS_META),
   }));
 
@@ -662,14 +662,14 @@ function Dashboard({ onLogout }) {
 
   // --- PO derived data ---
   const companyPOs = useMemo(() => posData.filter((p) => p.company === companyId), [posData, companyId]);
-  const poVendors = useMemo(() => {
-    const fromData = companyPOs.map((p) => p.vendor);
-    return Array.from(new Set([...fromData, "งานเพิ่ม"]));
-  }, [companyPOs]);
+  // ตัวเลือกไซต์งานสำหรับตัวกรอง PO อิงตามรายชื่อในแถบ "ไซต์งาน" (sitesData) โดยตรง
+  const poSiteOptions = useMemo(() => {
+    return Array.from(new Set(sitesData.map((s) => s.company))).filter(Boolean);
+  }, [sitesData]);
 
   const filteredPOs = useMemo(() => {
     return companyPOs.filter((p) => {
-      if (poVendorFilter !== "all" && p.vendor !== poVendorFilter) return false;
+      if (poSiteFilter !== "all" && p.site !== poSiteFilter) return false;
       if (poStatusFilter !== "all" && p.status !== poStatusFilter) return false;
       if (poSearch.trim()) {
         const q = poSearch.trim().toLowerCase();
@@ -678,7 +678,7 @@ function Dashboard({ onLogout }) {
       }
       return true;
     });
-  }, [companyPOs, poVendorFilter, poStatusFilter, poSearch]);
+  }, [companyPOs, poSiteFilter, poStatusFilter, poSearch]);
 
   const poCounts = useMemo(() => {
     const c = { total: companyPOs.length, totalAmount: 0, pending: 0, approved: 0, ordered: 0, paid: 0, cancelled: 0 };
@@ -746,7 +746,7 @@ function Dashboard({ onLogout }) {
   }, []);
 
   const clearPoFilters = () => {
-    setPoSearch(""); setPoVendorFilter("all"); setPoStatusFilter("all");
+    setPoSearch(""); setPoSiteFilter("all"); setPoStatusFilter("all");
   };
 
   const NAV_ITEMS = [
@@ -945,9 +945,9 @@ function Dashboard({ onLogout }) {
 
         {view === "po" && (
           <POListView
-            theme={theme} inputStyle={inputStyle} vendors={poVendors}
+            theme={theme} inputStyle={inputStyle} sites={poSiteOptions}
             search={poSearch} setSearch={setPoSearch}
-            vendorFilter={poVendorFilter} setVendorFilter={setPoVendorFilter}
+            siteFilter={poSiteFilter} setSiteFilter={setPoSiteFilter}
             statusFilter={poStatusFilter} setStatusFilter={setPoStatusFilter}
             clearFilters={clearPoFilters} filteredPOs={filteredPOs}
             loading={loadingPos} error={poLoadError}
@@ -1240,8 +1240,8 @@ function SitesView({ theme, inputStyle, search, setSearch, filteredSites, loadin
 /* ------------------------------------------------------------------ */
 
 function POListView({
-  theme, inputStyle, vendors,
-  search, setSearch, vendorFilter, setVendorFilter,
+  theme, inputStyle, sites,
+  search, setSearch, siteFilter, setSiteFilter,
   statusFilter, setStatusFilter, clearFilters, filteredPOs,
   loading, error,
 }) {
@@ -1268,9 +1268,9 @@ function POListView({
             style={{ ...inputStyle, width: "100%", paddingLeft: 30 }}
           />
         </div>
-        <select className="op-sel" value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} style={{ ...inputStyle, minWidth: 160 }}>
-          <option value="all">ทุกผู้ขาย / ร้านค้า</option>
-          {vendors.map((v) => <option key={v} value={v}>{v}</option>)}
+        <select className="op-sel" value={siteFilter} onChange={(e) => setSiteFilter(e.target.value)} style={{ ...inputStyle, minWidth: 220 }}>
+          <option value="all">ทุกไซต์งาน</option>
+          {sites.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
         <select className="op-sel" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ ...inputStyle, minWidth: 150 }}>
           <option value="all">ทุกสถานะ PO</option>
