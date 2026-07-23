@@ -224,7 +224,8 @@ const PO_SHEET_CSV_URL_BY_COMPANY = {
 };
 
 // ชีตสำหรับ "ไซต์งาน" (Master Site) — คอลัมน์ที่รองรับ:
-// id, company, type, address, coordinator, phone, contractStart, contractEnd, daysLeft, status
+// id, companyId, company, type, address, coordinator, phone, contractStart, contractEnd, daysLeft, status
+// companyId ต้องเป็น "engpower" หรือ "achieved" เพื่อใช้แยกไซต์งานตามบริษัท
 // ถ้าปล่อยว่างไว้ ระบบจะใช้ข้อมูลตัวอย่าง (SAMPLE_SITES) ด้านล่างแทน
 const SITES_SHEET_CSV_URL = "";
 
@@ -267,15 +268,17 @@ const SAMPLE_INSURANCE = [
 ];
 
 // ข้อมูลไซต์งาน นำเข้าจากไฟล์ Excel ที่แนบ (Mastersite.xlsx)
+// เพิ่มคอลัมน์ companyId เพื่อแยกไซต์งานตามบริษัท ("engpower" = งานระบบวิศวกรรม, "achieved" = งานรับเหมาดูแลอาคาร/สวน)
+// *** เดิมข้อมูลเหล่านี้ยังไม่มีการระบุบริษัทชัดเจน ให้ไปแก้ companyId ของแต่ละไซต์ให้ตรงกับความเป็นจริง ***
 const SAMPLE_SITES = [
-  { "id": "SPK-BAMBAT", "company": "รพ.สมเด็จพระปิ่นเกล้า อาคารบำบัด", "type": "โรงพยาบาลรัฐ", "address": "504 ถนน สมเด็จพระเจ้าตากสิน แขวงบุคคโล เขตธนบุรี กรุงเทพมหานคร 10600", "coordinator": "พล", "phone": "080-463-2027", "contractStart": "1 ต.ค. 2568", "contractEnd": "30 ก.ย. 2569", "daysLeft": 71, "status": "ดำเนินการ" },
-  { "id": "SPK-14", "company": "รพ.สมเด็จพระปิ่นเกล้า อาคาร 14 ชั้น", "type": "โรงพยาบาลรัฐ", "address": "504 ถนน สมเด็จพระเจ้าตากสิน แขวงบุคคโล เขตธนบุรี กรุงเทพมหานคร 10600", "coordinator": "เบิร์ด", "phone": "084-774-4545", "contractStart": "1 ต.ค. 2568", "contractEnd": "30 ก.ย. 2569", "daysLeft": 71, "status": "ดำเนินการ" },
-  { "id": "SPK-80", "company": "รพ.สมเด็จพระปิ่นเกล้า อาคาร 80 ปี", "type": "โรงพยาบาลรัฐ", "address": "504 ถนน สมเด็จพระเจ้าตากสิน แขวงบุคคโล เขตธนบุรี กรุงเทพมหานคร 10600", "coordinator": "เต๋า", "phone": "065-955-5264", "contractStart": "1 ต.ค. 2568", "contractEnd": "30 ก.ย. 2569", "daysLeft": 71, "status": "ดำเนินการ" },
-  { "id": "NBTC", "company": "สำนักงาน กสทช.", "type": "หน่วยงานรัฐ", "address": "87 ถนนพหลโยธิน ซอย 8 แขวงสามเสนใน เขตพญาไท กรุงเทพฯ 10400", "coordinator": "ศรายุทธ", "phone": "090-994-2005", "contractStart": "1 ม.ค. 2569", "contractEnd": "31 ธ.ค. 2569", "daysLeft": 163, "status": "ดำเนินการ" },
-  { "id": "MU-SCI", "company": "มหิดล คณะวิทยาศาสตร์ พญาไท", "type": "มหาวิทยาลัย", "address": "272 ถนน พระรามที่ 6 แขวงทุ่งพญาไท เขตราชเทวี กรุงเทพมหานคร 10400", "coordinator": "แดง", "phone": "094-428-2945", "contractStart": "", "contractEnd": "", "daysLeft": "", "status": "ดำเนินการ" },
-  { "id": "RID-MC", "company": "ศูนย์การแพทย์ปัญญานันทภิกขุ ชลประทาน", "type": "โรงพยาบาล", "address": "222 หมู่ที่ 1 ถนน ติวานนท์ ตำบลบางตลาด อำเภอปากเกร็ด นนทบุรี 11120", "coordinator": "ส้ม", "phone": "083-443-1442", "contractStart": "1 ต.ค. 2567", "contractEnd": "30 ก.ย. 2569", "daysLeft": 71, "status": "ดำเนินการ" },
-  { "id": "EGAT-HQ", "company": "การไฟฟ้าฝ่ายผลิตแห่งประเทศไทย(สำนักงานใหญ่)", "type": "รัฐวิสาหกิจ", "address": "53 หมู่ 2 ถนนจรัญสนิทวงศ์ ตำบลบางกรวย อำเภอบางกรวย จังหวัดนนทบุรี 11130", "coordinator": "เกด", "phone": "095-789-3991 ", "contractStart": "", "contractEnd": "", "daysLeft": "", "status": "ดำเนินการ" },
-  { "id": "OAP-HQ", "company": "สำนักงานปรมาณูเพื่อสันติ", "type": "หน่วยงานรัฐ", "address": "16 ถนน วิภาวดีรังสิต แขวงลาดยาว เขตจตุจักร กรุงเทพมหานคร 10900", "coordinator": "ต้อม", "phone": "081-854-7955", "contractStart": "23 ม.ค. 2569", "contractEnd": "8 พ.ย. 2569", "daysLeft": 110, "status": "ดำเนินการ" }
+  { "id": "SPK-BAMBAT", "companyId": "engpower", "company": "รพ.สมเด็จพระปิ่นเกล้า อาคารบำบัด", "type": "โรงพยาบาลรัฐ", "address": "504 ถนน สมเด็จพระเจ้าตากสิน แขวงบุคคโล เขตธนบุรี กรุงเทพมหานคร 10600", "coordinator": "พล", "phone": "080-463-2027", "contractStart": "1 ต.ค. 2568", "contractEnd": "30 ก.ย. 2569", "daysLeft": 71, "status": "ดำเนินการ" },
+  { "id": "SPK-14", "companyId": "engpower", "company": "รพ.สมเด็จพระปิ่นเกล้า อาคาร 14 ชั้น", "type": "โรงพยาบาลรัฐ", "address": "504 ถนน สมเด็จพระเจ้าตากสิน แขวงบุคคโล เขตธนบุรี กรุงเทพมหานคร 10600", "coordinator": "เบิร์ด", "phone": "084-774-4545", "contractStart": "1 ต.ค. 2568", "contractEnd": "30 ก.ย. 2569", "daysLeft": 71, "status": "ดำเนินการ" },
+  { "id": "SPK-80", "companyId": "engpower", "company": "รพ.สมเด็จพระปิ่นเกล้า อาคาร 80 ปี", "type": "โรงพยาบาลรัฐ", "address": "504 ถนน สมเด็จพระเจ้าตากสิน แขวงบุคคโล เขตธนบุรี กรุงเทพมหานคร 10600", "coordinator": "เต๋า", "phone": "065-955-5264", "contractStart": "1 ต.ค. 2568", "contractEnd": "30 ก.ย. 2569", "daysLeft": 71, "status": "ดำเนินการ" },
+  { "id": "NBTC", "companyId": "engpower", "company": "สำนักงาน กสทช.", "type": "หน่วยงานรัฐ", "address": "87 ถนนพหลโยธิน ซอย 8 แขวงสามเสนใน เขตพญาไท กรุงเทพฯ 10400", "coordinator": "ศรายุทธ", "phone": "090-994-2005", "contractStart": "1 ม.ค. 2569", "contractEnd": "31 ธ.ค. 2569", "daysLeft": 163, "status": "ดำเนินการ" },
+  { "id": "MU-SCI", "companyId": "engpower", "company": "มหิดล คณะวิทยาศาสตร์ พญาไท", "type": "มหาวิทยาลัย", "address": "272 ถนน พระรามที่ 6 แขวงทุ่งพญาไท เขตราชเทวี กรุงเทพมหานคร 10400", "coordinator": "แดง", "phone": "094-428-2945", "contractStart": "", "contractEnd": "", "daysLeft": "", "status": "ดำเนินการ" },
+  { "id": "RID-MC", "companyId": "engpower", "company": "ศูนย์การแพทย์ปัญญานันทภิกขุ ชลประทาน", "type": "โรงพยาบาล", "address": "222 หมู่ที่ 1 ถนน ติวานนท์ ตำบลบางตลาด อำเภอปากเกร็ด นนทบุรี 11120", "coordinator": "ส้ม", "phone": "083-443-1442", "contractStart": "1 ต.ค. 2567", "contractEnd": "30 ก.ย. 2569", "daysLeft": 71, "status": "ดำเนินการ" },
+  { "id": "EGAT-HQ", "companyId": "engpower", "company": "การไฟฟ้าฝ่ายผลิตแห่งประเทศไทย(สำนักงานใหญ่)", "type": "รัฐวิสาหกิจ", "address": "53 หมู่ 2 ถนนจรัญสนิทวงศ์ ตำบลบางกรวย อำเภอบางกรวย จังหวัดนนทบุรี 11130", "coordinator": "เกด", "phone": "095-789-3991 ", "contractStart": "", "contractEnd": "", "daysLeft": "", "status": "ดำเนินการ" },
+  { "id": "OAP-HQ", "companyId": "engpower", "company": "สำนักงานปรมาณูเพื่อสันติ", "type": "หน่วยงานรัฐ", "address": "16 ถนน วิภาวดีรังสิต แขวงลาดยาว เขตจตุจักร กรุงเทพมหานคร 10900", "coordinator": "ต้อม", "phone": "081-854-7955", "contractStart": "23 ม.ค. 2569", "contractEnd": "8 พ.ย. 2569", "daysLeft": 110, "status": "ดำเนินการ" }
 ];
 
 const CUSTOM_SHEETS = [
@@ -547,7 +550,7 @@ function Dashboard({ onLogout }) {
       .finally(() => setLoadingTasks(false));
   }, []);
 
-  // โหลดข้อมูล "ไซต์งาน" จาก Google Sheet (ชีตเดียวใช้ร่วมกันทั้งสองบริษัท)
+  // โหลดข้อมูล "ไซต์งาน" จาก Google Sheet (ชีตเดียวใช้ร่วมกันทั้งสองบริษัท คอลัมน์ companyId แยกเอง)
   useEffect(() => {
     if (!SITES_SHEET_CSV_URL) return; // ยังไม่ได้ตั้งค่า Google Sheet ใช้ข้อมูลตัวอย่างต่อไป
     setLoadingSites(true);
@@ -562,6 +565,7 @@ function Dashboard({ onLogout }) {
         const rows = parsed.data
           .map((r) => ({
             id: (r.id || "").toString().trim(),
+            companyId: (r.companyId || "").toString().trim(),
             company: (r.company || "").toString().trim(),
             type: (r.type || "").toString().trim(),
             address: (r.address || "").toString().trim(),
@@ -700,10 +704,10 @@ function Dashboard({ onLogout }) {
   const companyPOs = useMemo(() => posData.filter((p) => p.company === companyId), [posData, companyId]);
   // companyPOsGrouped = รวมทุกแถวที่มีเลขที่ PO (id) เดียวกัน ให้กลายเป็น "หนึ่งใบ" พร้อมยอดรวมที่ถูกต้อง
   const companyPOsGrouped = useMemo(() => groupPOsById(companyPOs), [companyPOs]);
-  // ตัวเลือกไซต์งานสำหรับตัวกรอง PO อิงตามรายชื่อในแถบ "ไซต์งาน" (sitesData) โดยตรง
+  // ตัวเลือกไซต์งานสำหรับตัวกรอง PO อิงตามรายชื่อในแถบ "ไซต์งาน" ของบริษัทที่เลือกอยู่เท่านั้น
   const poSiteOptions = useMemo(() => {
-    return Array.from(new Set(sitesData.map((s) => s.company))).filter(Boolean);
-  }, [sitesData]);
+    return Array.from(new Set(sitesData.filter((s) => s.companyId === companyId).map((s) => s.company))).filter(Boolean);
+  }, [sitesData, companyId]);
 
   const filteredPOs = useMemo(() => {
     return companyPOsGrouped.filter((p) => {
@@ -746,15 +750,17 @@ function Dashboard({ onLogout }) {
     return Object.values(buckets).sort((a, b) => (a.sortMonth > b.sortMonth ? 1 : a.sortMonth < b.sortMonth ? -1 : a.sortDay - b.sortDay));
   }, [companyPOs, poSummaryPeriod]);
 
-  // --- Site (Master Site) derived data ---
+  // --- Site (Master Site) derived data — กรองเฉพาะไซต์งานของบริษัทที่เลือกอยู่ ---
+  const companySites = useMemo(() => sitesData.filter((s) => s.companyId === companyId), [sitesData, companyId]);
+
   const filteredSites = useMemo(() => {
-    if (!siteSearch.trim()) return sitesData;
+    if (!siteSearch.trim()) return companySites;
     const q = siteSearch.trim().toLowerCase();
-    return sitesData.filter((s) => {
+    return companySites.filter((s) => {
       const hay = `${s.id} ${s.company} ${s.type} ${s.address} ${s.coordinator} ${s.phone}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [sitesData, siteSearch]);
+  }, [companySites, siteSearch]);
 
   // --- Insurance (ประกันรถ) derived summary ---
   const insuranceSummary = useMemo(() => {
@@ -968,7 +974,7 @@ function Dashboard({ onLogout }) {
             theme={theme} counts={counts} pieData={pieData} siteData={siteData}
             poCounts={poCounts} poPieData={poPieData} poBucketData={poBucketData}
             poSummaryPeriod={poSummaryPeriod} setPoSummaryPeriod={setPoSummaryPeriod}
-            totalSites={sitesData.length} insuranceSummary={insuranceSummary}
+            totalSites={companySites.length} insuranceSummary={insuranceSummary}
             insuranceExpiringSoon={insuranceExpiringSoon}
           />
         )}
