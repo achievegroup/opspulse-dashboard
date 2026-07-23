@@ -210,7 +210,8 @@ const PO_STATUS_META = {
 // ถ้าปล่อยว่างไว้ ระบบจะใช้ข้อมูลตัวอย่าง (SAMPLE_TASKS) ด้านล่างแทน
 const SHEET_CSV_URL = "";
 
-// ชีตสำหรับรายการ PO (คอลัมน์ที่รองรับ: id, site, vendor, description, qty, amount, date, status)
+// ชีตสำหรับรายการ PO (คอลัมน์ที่รองรับ: id, site, vendor, description, qty, unit, amount, date, status)
+// unit = หน่วยนับของแต่ละรายการ เช่น ชิ้น, ถุง, แกลลอน, กก., เมตร (จะแสดงต่อท้ายจำนวนในหน้ารายละเอียด PO)
 // ใส่ลิงก์แยกตามบริษัทได้ที่นี่ — ถ้าปล่อยว่างไว้ ระบบจะใช้ข้อมูลตัวอย่าง (SAMPLE_POS) แทน
 //
 // สำคัญ: หนึ่งใบสั่งซื้อ (PO) มักมีสินค้า/บริการหลายรายการ ให้ใส่ "หนึ่งแถวต่อหนึ่งรายการ"
@@ -356,24 +357,24 @@ const SAMPLE_TASKS = [
 // ด้านล่างนี้มี 2 รายการ ระบบจะรวมยอดเงินของทุกแถวที่ id ตรงกันให้อัตโนมัติ และแสดงรายละเอียด
 // ทั้งหมดเมื่อคลิกที่แถว PO นั้นในตาราง
 const SAMPLE_POS = [
-  { id: "AP-PO-0489", company: "achieved", site: "รพ.สมเด็จพระปิ่นเกล้า อาคารบำบัด", vendor: "เคมีภัณฑ์สะอาด", description: "น้ำยาทำความสะอาดพื้นและกระจก (ล็อตเดือน ก.ค.)", qty: 60, amount: 48500, date: "3 ก.ค. 2569", status: "paid" },
-  { id: "AP-PO-0489", company: "achieved", site: "รพ.สมเด็จพระปิ่นเกล้า อาคารบำบัด", vendor: "เคมีภัณฑ์สะอาด", description: "ถุงขยะพลาสติกดำ ขนาด 36x45 นิ้ว", qty: 100, amount: 6200, date: "3 ก.ค. 2569", status: "paid" },
-  { id: "AP-PO-0492", company: "achieved", site: "รพ.สมเด็จพระปิ่นเกล้า อาคาร 14 ชั้น", vendor: "ยูนิฟอร์มโปร", description: "ถุงมือยางและอุปกรณ์เซฟตี้", qty: 20, amount: 9700, date: "28 มิ.ย. 2569", status: "paid" },
-  { id: "AP-PO-0501", company: "achieved", site: "รพ.สมเด็จพระปิ่นเกล้า อาคาร 80 ปี", vendor: "อุปกรณ์ทำความสะอาดไทย", description: "ไม้ถูพื้นและอุปกรณ์เซฟตี้", qty: 30, amount: 22300, date: "8 ก.ค. 2569", status: "ordered" },
-  { id: "AP-PO-0502", company: "achieved", site: "ศูนย์การแพทย์ปัญญานันทภิกขุ ชลประทาน", vendor: "เคมีภัณฑ์สะอาด", description: "เคมีขัดพื้นหินอ่อน", qty: 10, amount: 15600, date: "15 ก.ค. 2569", status: "pending" },
-  { id: "AP-PO-0503", company: "achieved", site: "มหิดล คณะวิทยาศาสตร์ พญาไท", vendor: "ยูนิฟอร์มโปร", description: "ชุดยูนิฟอร์มพนักงานแม่บ้าน 40 ชุด", qty: 40, amount: 68000, date: "12 ก.ค. 2569", status: "approved" },
-  { id: "AP-PO-0504", company: "achieved", site: "รพ.สมเด็จพระปิ่นเกล้า อาคารบำบัด", vendor: "เครื่องจักรทำความสะอาด", description: "เครื่องขัดพื้นไฟฟ้า 2 เครื่อง", qty: 2, amount: 89000, date: "18 ก.ค. 2569", status: "pending" },
-  { id: "AP-PO-0505", company: "achieved", site: "สำนักงาน กสทช.", vendor: "อุปกรณ์ทำความสะอาดไทย", description: "ถังขยะแยกประเภท 20 ใบ", qty: 20, amount: 34200, date: "20 ก.ค. 2569", status: "cancelled" },
+  { id: "AP-PO-0489", company: "achieved", site: "รพ.สมเด็จพระปิ่นเกล้า อาคารบำบัด", vendor: "เคมีภัณฑ์สะอาด", description: "น้ำยาทำความสะอาดพื้นและกระจก (ล็อตเดือน ก.ค.)", qty: 60, unit: "แกลลอน", amount: 48500, date: "3 ก.ค. 2569", status: "paid" },
+  { id: "AP-PO-0489", company: "achieved", site: "รพ.สมเด็จพระปิ่นเกล้า อาคารบำบัด", vendor: "เคมีภัณฑ์สะอาด", description: "ถุงขยะพลาสติกดำ ขนาด 36x45 นิ้ว", qty: 100, unit: "ถุง", amount: 6200, date: "3 ก.ค. 2569", status: "paid" },
+  { id: "AP-PO-0492", company: "achieved", site: "รพ.สมเด็จพระปิ่นเกล้า อาคาร 14 ชั้น", vendor: "ยูนิฟอร์มโปร", description: "ถุงมือยางและอุปกรณ์เซฟตี้", qty: 20, unit: "คู่", amount: 9700, date: "28 มิ.ย. 2569", status: "paid" },
+  { id: "AP-PO-0501", company: "achieved", site: "รพ.สมเด็จพระปิ่นเกล้า อาคาร 80 ปี", vendor: "อุปกรณ์ทำความสะอาดไทย", description: "ไม้ถูพื้นและอุปกรณ์เซฟตี้", qty: 30, unit: "ชิ้น", amount: 22300, date: "8 ก.ค. 2569", status: "ordered" },
+  { id: "AP-PO-0502", company: "achieved", site: "ศูนย์การแพทย์ปัญญานันทภิกขุ ชลประทาน", vendor: "เคมีภัณฑ์สะอาด", description: "เคมีขัดพื้นหินอ่อน", qty: 10, unit: "แกลลอน", amount: 15600, date: "15 ก.ค. 2569", status: "pending" },
+  { id: "AP-PO-0503", company: "achieved", site: "มหิดล คณะวิทยาศาสตร์ พญาไท", vendor: "ยูนิฟอร์มโปร", description: "ชุดยูนิฟอร์มพนักงานแม่บ้าน 40 ชุด", qty: 40, unit: "ชุด", amount: 68000, date: "12 ก.ค. 2569", status: "approved" },
+  { id: "AP-PO-0504", company: "achieved", site: "รพ.สมเด็จพระปิ่นเกล้า อาคารบำบัด", vendor: "เครื่องจักรทำความสะอาด", description: "เครื่องขัดพื้นไฟฟ้า 2 เครื่อง", qty: 2, unit: "เครื่อง", amount: 89000, date: "18 ก.ค. 2569", status: "pending" },
+  { id: "AP-PO-0505", company: "achieved", site: "สำนักงาน กสทช.", vendor: "อุปกรณ์ทำความสะอาดไทย", description: "ถังขยะแยกประเภท 20 ใบ", qty: 20, unit: "ใบ", amount: 34200, date: "20 ก.ค. 2569", status: "cancelled" },
 
-  { id: "EP-PO-3288", company: "engpower", site: "การไฟฟ้าฝ่ายผลิตแห่งประเทศไทย(สำนักงานใหญ่)", vendor: "ไฟฟ้าเซฟตี้ซัพพลาย", description: "อะไหล่เบรกเกอร์ MDB", qty: 4, amount: 76500, date: "2 ก.ค. 2569", status: "paid" },
-  { id: "EP-PO-3291", company: "engpower", site: "สำนักงานปรมาณูเพื่อสันติ", vendor: "เจนเนอเรเตอร์ไทย", description: "แบตเตอรี่สตาร์ทเครื่องกำเนิดไฟฟ้า", qty: 2, amount: 15400, date: "27 มิ.ย. 2569", status: "paid" },
-  { id: "EP-PO-3301", company: "engpower", site: "สำนักงาน กสทช.", vendor: "คูลลิ่งเทคโนโลยี", description: "PM ระบบปรับอากาศ Chiller และ Cooling Tower", qty: 1, amount: 65000, date: "5 ก.ค. 2569", status: "paid" },
-  { id: "EP-PO-3301", company: "engpower", site: "สำนักงาน กสทช.", vendor: "คูลลิ่งเทคโนโลยี", description: "น้ำยาแอร์เติมระบบ Chiller", qty: 8, amount: 12400, date: "5 ก.ค. 2569", status: "paid" },
-  { id: "EP-PO-3302", company: "engpower", site: "การไฟฟ้าฝ่ายผลิตแห่งประเทศไทย(สำนักงานใหญ่)", vendor: "คูลลิ่งเทคโนโลยี", description: "คอมเพรสเซอร์ Chiller สำรอง", qty: 1, amount: 245000, date: "9 ก.ค. 2569", status: "ordered" },
-  { id: "EP-PO-3303", company: "engpower", site: "สำนักงานปรมาณูเพื่อสันติ", vendor: "เจนเนอเรเตอร์ไทย", description: "น้ำมันเครื่องและไส้กรองเครื่องกำเนิดไฟฟ้า", qty: 12, amount: 18900, date: "13 ก.ค. 2569", status: "approved" },
-  { id: "EP-PO-3304", company: "engpower", site: "ศูนย์การแพทย์ปัญญานันทภิกขุ ชลประทาน", vendor: "ไฟฟ้าเซฟตี้ซัพพลาย", description: "สายไฟและท่อร้อยสาย", qty: 15, amount: 41200, date: "16 ก.ค. 2569", status: "pending" },
-  { id: "EP-PO-3305", company: "engpower", site: "รพ.สมเด็จพระปิ่นเกล้า อาคาร 80 ปี", vendor: "ลิฟต์เซอร์วิสโปร", description: "อะไหล่ลิฟต์โดยสาร", qty: 3, amount: 132000, date: "19 ก.ค. 2569", status: "pending" },
-  { id: "EP-PO-3310", company: "engpower", site: "มหิดล คณะวิทยาศาสตร์ พญาไท", vendor: "ลิฟต์เซอร์วิสโปร", description: "ชุดสายเคเบิลลิฟต์โดยสาร", qty: 6, amount: 58900, date: "21 ก.ค. 2569", status: "cancelled" },
+  { id: "EP-PO-3288", company: "engpower", site: "การไฟฟ้าฝ่ายผลิตแห่งประเทศไทย(สำนักงานใหญ่)", vendor: "ไฟฟ้าเซฟตี้ซัพพลาย", description: "อะไหล่เบรกเกอร์ MDB", qty: 4, unit: "ตัว", amount: 76500, date: "2 ก.ค. 2569", status: "paid" },
+  { id: "EP-PO-3291", company: "engpower", site: "สำนักงานปรมาณูเพื่อสันติ", vendor: "เจนเนอเรเตอร์ไทย", description: "แบตเตอรี่สตาร์ทเครื่องกำเนิดไฟฟ้า", qty: 2, unit: "ลูก", amount: 15400, date: "27 มิ.ย. 2569", status: "paid" },
+  { id: "EP-PO-3301", company: "engpower", site: "สำนักงาน กสทช.", vendor: "คูลลิ่งเทคโนโลยี", description: "PM ระบบปรับอากาศ Chiller และ Cooling Tower", qty: 1, unit: "งาน", amount: 65000, date: "5 ก.ค. 2569", status: "paid" },
+  { id: "EP-PO-3301", company: "engpower", site: "สำนักงาน กสทช.", vendor: "คูลลิ่งเทคโนโลยี", description: "น้ำยาแอร์เติมระบบ Chiller", qty: 8, unit: "กก.", amount: 12400, date: "5 ก.ค. 2569", status: "paid" },
+  { id: "EP-PO-3302", company: "engpower", site: "การไฟฟ้าฝ่ายผลิตแห่งประเทศไทย(สำนักงานใหญ่)", vendor: "คูลลิ่งเทคโนโลยี", description: "คอมเพรสเซอร์ Chiller สำรอง", qty: 1, unit: "ตัว", amount: 245000, date: "9 ก.ค. 2569", status: "ordered" },
+  { id: "EP-PO-3303", company: "engpower", site: "สำนักงานปรมาณูเพื่อสันติ", vendor: "เจนเนอเรเตอร์ไทย", description: "น้ำมันเครื่องและไส้กรองเครื่องกำเนิดไฟฟ้า", qty: 12, unit: "ลิตร", amount: 18900, date: "13 ก.ค. 2569", status: "approved" },
+  { id: "EP-PO-3304", company: "engpower", site: "ศูนย์การแพทย์ปัญญานันทภิกขุ ชลประทาน", vendor: "ไฟฟ้าเซฟตี้ซัพพลาย", description: "สายไฟและท่อร้อยสาย", qty: 15, unit: "เมตร", amount: 41200, date: "16 ก.ค. 2569", status: "pending" },
+  { id: "EP-PO-3305", company: "engpower", site: "รพ.สมเด็จพระปิ่นเกล้า อาคาร 80 ปี", vendor: "ลิฟต์เซอร์วิสโปร", description: "อะไหล่ลิฟต์โดยสาร", qty: 3, unit: "ชิ้น", amount: 132000, date: "19 ก.ค. 2569", status: "pending" },
+  { id: "EP-PO-3310", company: "engpower", site: "มหิดล คณะวิทยาศาสตร์ พญาไท", vendor: "ลิฟต์เซอร์วิสโปร", description: "ชุดสายเคเบิลลิฟต์โดยสาร", qty: 6, unit: "เส้น", amount: 58900, date: "21 ก.ค. 2569", status: "cancelled" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -604,6 +605,7 @@ function Dashboard({ onLogout }) {
             vendor: (r.vendor || "").toString().trim(),
             description: (r.description || "").toString().trim(),
             qty: parseFloat((r.qty || "0").toString().replace(/,/g, "")) || 0,
+            unit: (r.unit || "").toString().trim(),
             amount: parseFloat((r.amount || "0").toString().replace(/,/g, "")) || 0,
             date: (r.date || "").toString().trim(),
             status: (r.status || "").toString().trim(),
@@ -1435,7 +1437,7 @@ function PODetailModal({ theme, po, onClose }) {
               {po.items.map((it, i) => (
                 <tr key={i} style={{ borderTop: `1px solid ${theme.border}` }}>
                   <td style={{ padding: "9px 12px" }}>{it.description}</td>
-                  <td style={{ padding: "9px 12px", textAlign: "right" }}>{it.qty || "-"}</td>
+                  <td style={{ padding: "9px 12px", textAlign: "right" }}>{it.qty || "-"}{it.unit ? ` ${it.unit}` : ""}</td>
                   <td style={{ padding: "9px 12px", textAlign: "right", fontWeight: 600 }}>{formatBaht(it.amount || 0)}</td>
                 </tr>
               ))}
