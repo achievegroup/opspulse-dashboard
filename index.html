@@ -227,8 +227,8 @@ const PO_SHEET_CSV_URL_BY_COMPANY = {
 // คอลัมน์ที่รองรับในแต่ละชีต: id, company, type, address, coordinator, phone, contractStart, contractEnd, daysLeft, status
 // ใส่ลิงก์ CSV แยกตามบริษัทได้ที่นี่ — ถ้าปล่อยว่างไว้บริษัทไหน ระบบจะใช้ข้อมูลตัวอย่าง (SAMPLE_SITES) เฉพาะบริษัทนั้นแทน
 const SITES_SHEET_CSV_URL_BY_COMPANY = {
-  engpower: "https://docs.google.com/spreadsheets/d/1VrZkyX6aYf9ntRHeW0dlieVoEPmpj5n2FUEPMbV1GKc/export?format=csv",   // <-- วางลิงก์ CSV ของชีตไซต์งาน เอ็นจ์-เพาเวอร์ ที่นี่
-  achieved: "https://docs.google.com/spreadsheets/d/1uk4JPYLdI2FWPGojeTmGr7Ym1sU-eU7QVWP4rDQkWVs/export?format=csv",   // <-- วางลิงก์ CSV ของชีตไซต์งาน แอคชีฟแพลน ที่นี่
+  engpower: "https://docs.google.com/spreadsheets/d/1y5MiWdsf8AqOsjxG5aFFvLCykaqZvAIBsw8HG2Xg96Q/export?format=csv",   // <-- วางลิงก์ CSV ของชีตไซต์งาน เอ็นจ์-เพาเวอร์ ที่นี่
+  achieved: "",   // <-- วางลิงก์ CSV ของชีตไซต์งาน แอคชีฟแพลน ที่นี่
 };
 
 /* ------------------------------------------------------------------ */
@@ -978,7 +978,7 @@ function Dashboard({ onLogout }) {
 
         {view === "dashboard" && (
           <DashboardView
-            theme={theme} counts={counts} pieData={pieData} siteData={siteData}
+            theme={theme} siteData={siteData}
             poCounts={poCounts} poPieData={poPieData} poBucketData={poBucketData}
             poSummaryPeriod={poSummaryPeriod} setPoSummaryPeriod={setPoSummaryPeriod}
             totalSites={companySites.length} insuranceSummary={insuranceSummary}
@@ -1026,43 +1026,13 @@ function Dashboard({ onLogout }) {
 /* ------------------------------------------------------------------ */
 
 function DashboardView({
-  theme, counts, pieData, siteData,
+  theme, siteData,
   poCounts, poPieData, poBucketData, poSummaryPeriod, setPoSummaryPeriod,
   totalSites, insuranceSummary, insuranceExpiringSoon,
 }) {
   const outstandingPO = poCounts.pending + poCounts.approved + poCounts.ordered;
   return (
     <>
-      <div className="kpi-row" style={{ display: "flex", gap: 16, marginBottom: 22, flexWrap: "wrap" }}>
-        <KpiCard icon={ListTodo} label="งานทั้งหมด" value={counts.total} sub="ทุกไซต์งาน" theme={theme} tint={theme.primary} />
-        <KpiCard icon={Clock} label="กำลังดำเนินการ" value={counts.inprogress} sub="อยู่ระหว่างปฏิบัติงาน" theme={theme} tint={theme.accent} />
-      </div>
-
-      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-        <div style={{ flex: "1 1 340px", background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, padding: 20, boxShadow: theme.shadow }}>
-          <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14.5, margin: "0 0 4px" }}>สัดส่วนสถานะงาน</h3>
-          <p style={{ fontSize: 12, color: theme.textMuted, margin: "0 0 8px" }}>Task Status Breakdown</p>
-          <div style={{ height: 230 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={54} outerRadius={82} paddingAngle={3} strokeWidth={0}>
-                  {pieData.map((d) => <Cell key={d.key} fill={d.color} />)}
-                </Pie>
-                <Tooltip contentStyle={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 10, fontSize: 12.5, color: theme.text }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 16px", marginTop: 4 }}>
-            {pieData.map((d) => (
-              <div key={d.key} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: theme.textMuted }}>
-                <span style={{ width: 8, height: 8, borderRadius: 999, background: d.color }} />
-                {d.name} · {d.value}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* --- สรุปยอด PO (ย้ายมารวมในหน้าแดชบอร์ด) --- */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "26px 0 14px" }}>
         <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, margin: 0 }}>สรุปยอด PO</h2>
