@@ -223,11 +223,13 @@ const PO_SHEET_CSV_URL_BY_COMPANY = {
   achieved: "",   // <-- วางลิงก์ CSV ของชีต PO บริษัท แอคชีฟแพลน ที่นี่
 };
 
-// ชีตสำหรับ "ไซต์งาน" (Master Site) — คอลัมน์ที่รองรับ:
-// id, companyId, company, type, address, coordinator, phone, contractStart, contractEnd, daysLeft, status
-// companyId ต้องเป็น "engpower" หรือ "achieved" เพื่อใช้แยกไซต์งานตามบริษัท
-// ถ้าปล่อยว่างไว้ ระบบจะใช้ข้อมูลตัวอย่าง (SAMPLE_SITES) ด้านล่างแทน
-const SITES_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1y5MiWdsf8AqOsjxG5aFFvLCykaqZvAIBsw8HG2Xg96Q/edit?usp=sharing";
+// ชีตสำหรับ "ไซต์งาน" (Master Site) — แยกไฟล์/ลิงก์ต่างหากคนละบริษัท (ไม่ต้องมีคอลัมน์ companyId ในชีตแล้ว)
+// คอลัมน์ที่รองรับในแต่ละชีต: id, company, type, address, coordinator, phone, contractStart, contractEnd, daysLeft, status
+// ใส่ลิงก์ CSV แยกตามบริษัทได้ที่นี่ — ถ้าปล่อยว่างไว้บริษัทไหน ระบบจะใช้ข้อมูลตัวอย่าง (SAMPLE_SITES) เฉพาะบริษัทนั้นแทน
+const SITES_SHEET_CSV_URL_BY_COMPANY = {
+  engpower: "https://docs.google.com/spreadsheets/d/1y5MiWdsf8AqOsjxG5aFFvLCykaqZvAIBsw8HG2Xg96Q/export?format=csv",   // <-- วางลิงก์ CSV ของชีตไซต์งาน เอ็นจ์-เพาเวอร์ ที่นี่
+  achieved: "",   // <-- วางลิงก์ CSV ของชีตไซต์งาน แอคชีฟแพลน ที่นี่
+};
 
 /* ------------------------------------------------------------------ */
 /* Custom Google-Sheet-linked modules (แถบเมนูด้านซ้าย)                */
@@ -550,12 +552,14 @@ function Dashboard({ onLogout }) {
       .finally(() => setLoadingTasks(false));
   }, []);
 
-  // โหลดข้อมูล "ไซต์งาน" จาก Google Sheet (ชีตเดียวใช้ร่วมกันทั้งสองบริษัท คอลัมน์ companyId แยกเอง)
+  // โหลดข้อมูล "ไซต์งาน" ตามบริษัทที่กำลังเลือกอยู่ (companyId) — แยกลิงก์ต่อบริษัท ไม่ต้องมีคอลัมน์ companyId ในชีตแล้ว
+  // เมื่อสลับบริษัท จะดึง URL ที่ตรงกับบริษัทนั้นจาก SITES_SHEET_CSV_URL_BY_COMPANY ให้อัตโนมัติ
   useEffect(() => {
-    if (!SITES_SHEET_CSV_URL) return; // ยังไม่ได้ตั้งค่า Google Sheet ใช้ข้อมูลตัวอย่างต่อไป
+    const url = SITES_SHEET_CSV_URL_BY_COMPANY[companyId];
+    if (!url) return; // ยังไม่ได้ตั้งค่า Google Sheet สำหรับบริษัทนี้ ใช้ข้อมูลตัวอย่างต่อไป
     setLoadingSites(true);
     setSitesLoadError("");
-    fetch(SITES_SHEET_CSV_URL)
+    fetch(url)
       .then((res) => {
         if (!res.ok) throw new Error("HTTP " + res.status);
         return res.text();
@@ -565,7 +569,7 @@ function Dashboard({ onLogout }) {
         const rows = parsed.data
           .map((r) => ({
             id: (r.id || "").toString().trim(),
-            companyId: (r.companyId || "").toString().trim(),
+            companyId: companyId, // เติม companyId ให้อัตโนมัติตามบริษัทที่กำลังโหลด (ไม่ต้องมีคอลัมน์นี้ในชีตแล้ว)
             company: (r.company || "").toString().trim(),
             type: (r.type || "").toString().trim(),
             address: (r.address || "").toString().trim(),
@@ -577,13 +581,16 @@ function Dashboard({ onLogout }) {
             status: (r.status || "").toString().trim(),
           }))
           .filter((r) => r.id);
-        if (rows.length) setSitesData(rows);
+        if (rows.length) {
+          // แทนที่เฉพาะไซต์งานของบริษัทนี้ ส่วนของอีกบริษัทที่เคยโหลดไว้แล้วยังอยู่เหมือนเดิม
+          setSitesData((prev) => [...prev.filter((s) => s.companyId !== companyId), ...rows]);
+        }
       })
       .catch((err) => {
         setSitesLoadError("โหลดข้อมูลไซต์งานจาก Google Sheet ไม่สำเร็จ กำลังแสดงข้อมูลตัวอย่างแทน (" + err.message + ")");
       })
       .finally(() => setLoadingSites(false));
-  }, []);
+  }, [companyId]); // <-- สำคัญ: ใส่ companyId เป็น dependency เพื่อให้โหลดใหม่เวลาสลับบริษัท
 
   // โหลดข้อมูล PO ตามบริษัทที่กำลังเลือกอยู่ (companyId) — ใช้ useEffect เดียว ไม่ซ้อนกัน
   // เมื่อสลับบริษัท (companyId เปลี่ยน) จะดึง URL ที่ตรงกับบริษัทนั้นจาก PO_SHEET_CSV_URL_BY_COMPANY ให้อัตโนมัติ
